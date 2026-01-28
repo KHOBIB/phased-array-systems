@@ -62,10 +62,10 @@ plotting = [
 pasys = "phased_array_systems.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/phased-array-systems/phased-array-systems"
-Documentation = "https://github.com/phased-array-systems/phased-array-systems#readme"
-Repository = "https://github.com/phased-array-systems/phased-array-systems"
-Issues = "https://github.com/phased-array-systems/phased-array-systems/issues"
+Homepage = "https://github.com/jman4162/phased-array-systems"
+Documentation = "https://github.com/jman4162/phased-array-systems#readme"
+Repository = "https://github.com/jman4162/phased-array-systems"
+Issues = "https://github.com/jman4162/phased-array-systems/issues"
 
 [tool.hatch.version]
 path = "src/phased_array_systems/__about__.py"

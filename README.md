@@ -1,5 +1,10 @@
 # phased-array-systems
 
+[![CI](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml)
+[![PyPI version](https://badge.fury.io/py/phased-array-systems.svg)](https://badge.fury.io/py/phased-array-systems)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Phased array antenna system design, optimization, and performance visualization for wireless communications and radar applications.
 
 ## Features
@@ -83,10 +88,45 @@ See the `examples/` directory:
 - `01_comms_single_case.py` - Single case evaluation
 - `02_comms_doe_trade.py` - Full DOE trade study workflow
 
-## Project Status
+### Tutorial Notebook
 
-Currently in development. See `CLAUDE.md` for implementation phases.
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jman4162/phased-array-systems/blob/main/notebooks/tutorial_phased_array_trade_study.ipynb)
+
+Try the interactive tutorial in Google Colab!
+
+## Package Structure
+
+```
+phased_array_systems/
+├── architecture/     # Array, RF chain, cost configurations
+├── scenarios/        # CommsLinkScenario, RadarDetectionScenario
+├── requirements/     # Requirement definitions and verification
+├── models/
+│   ├── antenna/      # Phased array adapter and metrics
+│   ├── comms/        # Link budget, propagation models
+│   └── swapc/        # Power and cost models
+├── trades/           # DOE, batch runner, Pareto analysis
+├── viz/              # Plotting utilities
+└── io/               # Config loading, results export
+```
+
+## Development
+
+```bash
+# Clone the repository
+git clone https://github.com/jman4162/phased-array-systems.git
+cd phased-array-systems
+
+# Install in development mode
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -v
+
+# Run linting
+ruff check .
+```
 
 ## License
 
-MIT
+MIT License - see [LICENSE](LICENSE) for details.
