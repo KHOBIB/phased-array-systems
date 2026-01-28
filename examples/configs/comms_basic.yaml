@@ -1,0 +1,75 @@
+# Basic Communications Link Budget Configuration
+# Single-case evaluation example
+
+name: "Basic Comms Array Study"
+version: "1.0"
+
+# Architecture definition
+architecture:
+  array:
+    geometry: rectangular
+    nx: 8
+    ny: 8
+    dx_lambda: 0.5
+    dy_lambda: 0.5
+    scan_limit_deg: 60.0
+  rf:
+    tx_power_w_per_elem: 1.0
+    pa_efficiency: 0.3
+    noise_figure_db: 3.0
+    feed_loss_db: 1.0
+    system_loss_db: 0.0
+  cost:
+    cost_per_elem_usd: 100.0
+    nre_usd: 10000.0
+    integration_cost_usd: 5000.0
+
+# Scenario definition
+scenario:
+  type: comms
+  freq_hz: 10.0e9          # 10 GHz (X-band)
+  bandwidth_hz: 10.0e6     # 10 MHz
+  range_m: 100.0e3         # 100 km
+  required_snr_db: 10.0
+  scan_angle_deg: 0.0
+  rx_antenna_gain_db: 0.0  # Isotropic receive antenna
+  rx_noise_temp_k: 290.0
+  path_loss_model: fspl
+
+# Requirements
+requirements:
+  - id: REQ-001
+    name: Minimum EIRP
+    metric_key: eirp_dbw
+    op: ">="
+    value: 40.0
+    units: dBW
+    severity: must
+
+  - id: REQ-002
+    name: Positive Link Margin
+    metric_key: link_margin_db
+    op: ">="
+    value: 0.0
+    units: dB
+    severity: must
+
+  - id: REQ-003
+    name: Maximum Cost
+    metric_key: cost_usd
+    op: "<="
+    value: 50000.0
+    units: USD
+    severity: must
+
+  - id: REQ-004
+    name: Preferred Link Margin
+    metric_key: link_margin_db
+    op: ">="
+    value: 6.0
+    units: dB
+    severity: should
+
+# Output configuration
+output_dir: ./results
+output_format: parquet

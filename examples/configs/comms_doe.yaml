@@ -1,0 +1,87 @@
+# DOE Trade Study Configuration
+# Explores array size vs. TX power trade space for communications link
+
+name: "Communications Array Trade Study"
+version: "1.0"
+
+# Base scenario (fixed parameters)
+scenario:
+  type: comms
+  freq_hz: 10.0e9          # 10 GHz (X-band)
+  bandwidth_hz: 10.0e6     # 10 MHz
+  range_m: 100.0e3         # 100 km
+  required_snr_db: 10.0
+  scan_angle_deg: 0.0
+  rx_antenna_gain_db: 0.0
+  rx_noise_temp_k: 290.0
+  path_loss_model: fspl
+
+# Requirements for feasibility filtering
+requirements:
+  - id: REQ-001
+    name: Minimum EIRP
+    metric_key: eirp_dbw
+    op: ">="
+    value: 35.0
+    units: dBW
+    severity: must
+
+  - id: REQ-002
+    name: Positive Link Margin
+    metric_key: link_margin_db
+    op: ">="
+    value: 0.0
+    units: dB
+    severity: must
+
+  - id: REQ-003
+    name: Maximum Cost
+    metric_key: cost_usd
+    op: "<="
+    value: 100000.0
+    units: USD
+    severity: must
+
+  - id: REQ-004
+    name: Maximum Power
+    metric_key: prime_power_w
+    op: "<="
+    value: 1000.0
+    units: W
+    severity: should
+
+# DOE Configuration
+doe:
+  method: lhs              # Latin Hypercube Sampling
+  n_samples: 100
+  seed: 42
+
+  variables:
+    - name: array.nx
+      type: int
+      low: 4
+      high: 16
+
+    - name: array.ny
+      type: int
+      low: 4
+      high: 16
+
+    - name: rf.tx_power_w_per_elem
+      type: float
+      low: 0.5
+      high: 3.0
+
+    - name: rf.pa_efficiency
+      type: float
+      low: 0.2
+      high: 0.5
+
+    - name: cost.cost_per_elem_usd
+      type: float
+      low: 75.0
+      high: 150.0
+
+# Output configuration
+output_dir: ./results/comms_doe
+output_format: parquet
