@@ -144,3 +144,4 @@ results/
 *.parquet
 *.csv
 !examples/configs/*.yaml
+package_design_and_requirements.txt
