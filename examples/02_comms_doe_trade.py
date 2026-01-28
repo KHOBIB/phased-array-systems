@@ -17,10 +17,11 @@ This is the full DOE workflow for exploring design trade-offs.
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")  # Use non-interactive backend for headless environments
+
 import matplotlib.pyplot as plt
 
-# Architecture classes used by DOE runner via string keys
 from phased_array_systems.io import export_results
 from phased_array_systems.requirements import Requirement, RequirementSet
 from phased_array_systems.scenarios import CommsLinkScenario

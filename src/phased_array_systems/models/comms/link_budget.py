@@ -96,11 +96,8 @@ class CommsLinkModel:
         # Add extra losses
         total_path_loss_db = path_loss_db + scenario.total_extra_loss_db
 
-        # Receive antenna gain
-        if scenario.rx_antenna_gain_db is not None:
-            g_rx_db = scenario.rx_antenna_gain_db
-        else:
-            g_rx_db = 0.0  # Isotropic
+        # Receive antenna gain (isotropic if not specified)
+        g_rx_db = scenario.rx_antenna_gain_db if scenario.rx_antenna_gain_db is not None else 0.0
 
         # Received power
         rx_power_dbw = eirp_dbw - total_path_loss_db + g_rx_db

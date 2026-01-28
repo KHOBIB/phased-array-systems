@@ -114,7 +114,7 @@ def evaluate_case_with_report(
     return metrics, report
 
 
-def evaluate_config(config: "StudyConfig") -> MetricsDict:
+def evaluate_config(config: StudyConfig) -> MetricsDict:
     """Evaluate a case from a StudyConfig object.
 
     Convenience function for config-driven evaluation.

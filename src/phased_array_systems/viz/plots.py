@@ -77,10 +77,7 @@ def pareto_plot(
             )
 
     # Plot all feasible points
-    if feasible_mask is not None:
-        plot_data = results[feasible_mask]
-    else:
-        plot_data = results
+    plot_data = results[feasible_mask] if feasible_mask is not None else results
 
     scatter = ax.scatter(
         plot_data[x],

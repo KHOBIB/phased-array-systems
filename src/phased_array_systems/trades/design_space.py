@@ -186,7 +186,7 @@ class DesignSpace(BaseModel):
 
         # Generate grid values for each variable
         var_values = []
-        for var, n_levels in zip(self.variables, levels_per_var):
+        for var, n_levels in zip(self.variables, levels_per_var, strict=True):
             var_values.append(var.get_grid_values(n_levels))
 
         # Create full factorial grid using meshgrid

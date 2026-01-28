@@ -20,10 +20,13 @@ ignore = [
     "B008",   # do not perform function calls in argument defaults
     "C901",   # too complex
     "ARG001", # unused function argument (common in protocols)
+    "ARG002", # unused method argument (common in protocols/interfaces)
 ]
 
 [lint.per-file-ignores]
 "tests/*" = ["ARG"]
+"examples/*" = ["E402"]  # matplotlib.use() must be called before pyplot import
+"notebooks/*" = ["E402", "F401", "F541", "W291", "I001"]  # notebooks have different import patterns
 
 [lint.isort]
 known-first-party = ["phased_array_systems"]
