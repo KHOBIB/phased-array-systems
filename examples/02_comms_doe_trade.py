@@ -96,9 +96,11 @@ def main():
     # =========================================================================
     design_space = (
         DesignSpace(name="Comms Array Design Space")
-        # Array dimensions
-        .add_variable("array.nx", type="int", low=4, high=16)
-        .add_variable("array.ny", type="int", low=4, high=16)
+        # Array dimensions (must be powers of 2 for sub-array constraints)
+        .add_variable("array.nx", type="categorical", values=[4, 8, 16])
+        .add_variable("array.ny", type="categorical", values=[4, 8, 16])
+        # Disable sub-array constraint for DOE flexibility (or use power-of-2 values)
+        .add_variable("array.enforce_subarray_constraint", type="categorical", values=[True])
         # Fixed array parameters
         .add_variable("array.geometry", type="categorical", values=["rectangular"])
         .add_variable("array.dx_lambda", type="float", low=0.5, high=0.5)

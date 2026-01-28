@@ -1,8 +1,17 @@
 """Architecture configuration models using Pydantic."""
 
+import math
 from typing import Literal
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
+
+# Valid power-of-two values for sub-array dimensions
+VALID_POWERS_OF_TWO = [2**i for i in range(1, 10)]  # 2, 4, 8, 16, 32, 64, 128, 256, 512
+
+
+def is_power_of_two(n: int) -> bool:
+    """Check if n is a power of two (and >= 2)."""
+    return n >= 2 and (n & (n - 1)) == 0
 
 
 class ArrayConfig(BaseModel):
@@ -15,6 +24,9 @@ class ArrayConfig(BaseModel):
         dx_lambda: Element spacing in x-direction (wavelengths)
         dy_lambda: Element spacing in y-direction (wavelengths)
         scan_limit_deg: Maximum scan angle from boresight (degrees)
+        max_subarray_nx: Maximum elements per sub-array in x (must be power of 2)
+        max_subarray_ny: Maximum elements per sub-array in y (must be power of 2)
+        enforce_subarray_constraint: Whether to enforce power-of-two sub-array constraint
     """
 
     geometry: Literal["rectangular", "circular", "triangular"] = "rectangular"
@@ -26,10 +38,112 @@ class ArrayConfig(BaseModel):
         default=60.0, ge=0, le=90, description="Maximum scan angle (degrees)"
     )
 
+    # Sub-array constraints for practical RF component design (power-of-two)
+    max_subarray_nx: int = Field(
+        default=8, ge=2, description="Max elements per sub-array in x (must be power of 2)"
+    )
+    max_subarray_ny: int = Field(
+        default=8, ge=2, description="Max elements per sub-array in y (must be power of 2)"
+    )
+    enforce_subarray_constraint: bool = Field(
+        default=True, description="Enforce power-of-two sub-array constraint"
+    )
+
+    @field_validator("max_subarray_nx", "max_subarray_ny")
+    @classmethod
+    def validate_power_of_two(cls, v: int) -> int:
+        """Validate that max sub-array dimensions are powers of two."""
+        if not is_power_of_two(v):
+            raise ValueError(
+                f"max_subarray value {v} must be a power of 2 "
+                f"(valid values: {VALID_POWERS_OF_TWO})"
+            )
+        return v
+
+    @model_validator(mode="after")
+    def validate_subarray_constraints(self) -> "ArrayConfig":
+        """Validate that array dimensions result in power-of-two sub-arrays."""
+        if not self.enforce_subarray_constraint:
+            return self
+
+        if self.geometry != "rectangular":
+            # Sub-array constraints only apply to rectangular arrays for now
+            return self
+
+        # Check x-direction
+        if self.nx > self.max_subarray_nx:
+            # Must be divisible by max_subarray_nx
+            if self.nx % self.max_subarray_nx != 0:
+                raise ValueError(
+                    f"nx={self.nx} must be divisible by max_subarray_nx={self.max_subarray_nx} "
+                    f"for arrays larger than max sub-array size. "
+                    f"Set enforce_subarray_constraint=False to disable."
+                )
+        else:
+            # Small array: nx itself must be power of two
+            if not is_power_of_two(self.nx):
+                raise ValueError(
+                    f"nx={self.nx} must be a power of 2 (2, 4, 8, 16, ...) when "
+                    f"enforce_subarray_constraint=True. Valid values: {VALID_POWERS_OF_TWO}"
+                )
+
+        # Check y-direction
+        if self.ny > self.max_subarray_ny:
+            # Must be divisible by max_subarray_ny
+            if self.ny % self.max_subarray_ny != 0:
+                raise ValueError(
+                    f"ny={self.ny} must be divisible by max_subarray_ny={self.max_subarray_ny} "
+                    f"for arrays larger than max sub-array size. "
+                    f"Set enforce_subarray_constraint=False to disable."
+                )
+        else:
+            # Small array: ny itself must be power of two
+            if not is_power_of_two(self.ny):
+                raise ValueError(
+                    f"ny={self.ny} must be a power of 2 (2, 4, 8, 16, ...) when "
+                    f"enforce_subarray_constraint=True. Valid values: {VALID_POWERS_OF_TWO}"
+                )
+
+        return self
+
     @property
     def n_elements(self) -> int:
         """Total number of elements in the array."""
         return self.nx * self.ny
+
+    @property
+    def subarray_nx(self) -> int:
+        """Actual elements per sub-array in x-direction."""
+        if self.nx <= self.max_subarray_nx:
+            return self.nx
+        return self.max_subarray_nx
+
+    @property
+    def subarray_ny(self) -> int:
+        """Actual elements per sub-array in y-direction."""
+        if self.ny <= self.max_subarray_ny:
+            return self.ny
+        return self.max_subarray_ny
+
+    @property
+    def n_subarrays_x(self) -> int:
+        """Number of sub-arrays in x-direction."""
+        return math.ceil(self.nx / self.max_subarray_nx)
+
+    @property
+    def n_subarrays_y(self) -> int:
+        """Number of sub-arrays in y-direction."""
+        return math.ceil(self.ny / self.max_subarray_ny)
+
+    @property
+    def n_subarrays(self) -> int:
+        """Total number of sub-arrays."""
+        return self.n_subarrays_x * self.n_subarrays_y
+
+    @property
+    def elements_per_subarray(self) -> int:
+        """Number of elements per sub-array."""
+        return self.subarray_nx * self.subarray_ny
 
 
 class RFChainConfig(BaseModel):

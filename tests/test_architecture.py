@@ -38,6 +38,110 @@ class TestArrayConfig:
             ArrayConfig(nx=8, ny=8, scan_limit_deg=95.0)
 
 
+class TestSubarrayConstraints:
+    """Tests for sub-array constraints (power-of-two)."""
+
+    def test_default_subarray_values(self):
+        """Test default sub-array constraint values."""
+        config = ArrayConfig(nx=8, ny=8)
+        assert config.max_subarray_nx == 8
+        assert config.max_subarray_ny == 8
+        assert config.enforce_subarray_constraint is True
+
+    def test_subarray_properties_small_array(self):
+        """Test sub-array properties for array smaller than max."""
+        config = ArrayConfig(nx=4, ny=4)
+        assert config.subarray_nx == 4
+        assert config.subarray_ny == 4
+        assert config.n_subarrays_x == 1
+        assert config.n_subarrays_y == 1
+        assert config.n_subarrays == 1
+        assert config.elements_per_subarray == 16
+
+    def test_subarray_properties_large_array(self):
+        """Test sub-array properties for array larger than max."""
+        config = ArrayConfig(nx=16, ny=32, max_subarray_nx=8, max_subarray_ny=8)
+        assert config.subarray_nx == 8
+        assert config.subarray_ny == 8
+        assert config.n_subarrays_x == 2
+        assert config.n_subarrays_y == 4
+        assert config.n_subarrays == 8
+        assert config.elements_per_subarray == 64
+
+    def test_subarray_constraint_enforced_valid(self):
+        """Test valid array dimensions with constraint enforced."""
+        # 16 is divisible by 8 and both are powers of 2
+        config = ArrayConfig(nx=16, ny=16, max_subarray_nx=8, max_subarray_ny=8)
+        assert config.n_subarrays == 4
+
+    def test_subarray_constraint_invalid_not_power_of_two_small(self):
+        """Test that non-power-of-two small array raises error."""
+        # nx=6 is not a power of 2
+        with pytest.raises(ValidationError, match="nx=6 must be a power of 2"):
+            ArrayConfig(nx=6, ny=8, max_subarray_nx=8, max_subarray_ny=8)
+
+    def test_subarray_constraint_invalid_not_divisible(self):
+        """Test that non-divisible large array raises error."""
+        # nx=12 is larger than 8 but not divisible by 8
+        with pytest.raises(ValidationError, match="nx=12 must be divisible by"):
+            ArrayConfig(nx=12, ny=8, max_subarray_nx=8, max_subarray_ny=8)
+
+    def test_max_subarray_must_be_power_of_two(self):
+        """Test that max_subarray values must be powers of two."""
+        with pytest.raises(ValidationError, match="must be a power of 2"):
+            ArrayConfig(nx=8, ny=8, max_subarray_nx=6, max_subarray_ny=8)
+
+    def test_subarray_constraint_disabled(self):
+        """Test that constraint can be disabled."""
+        # This would fail with constraint enabled (10, 12 not powers of 2)
+        config = ArrayConfig(
+            nx=10, ny=12,
+            max_subarray_nx=8, max_subarray_ny=8,
+            enforce_subarray_constraint=False
+        )
+        assert config.nx == 10
+        assert config.ny == 12
+        assert config.n_subarrays_x == 2  # ceil(10/8)
+        assert config.n_subarrays_y == 2  # ceil(12/8)
+
+    def test_custom_subarray_size_power_of_two(self):
+        """Test custom sub-array sizes (must be powers of two)."""
+        config = ArrayConfig(
+            nx=16, ny=16,
+            max_subarray_nx=4, max_subarray_ny=4
+        )
+        assert config.n_subarrays_x == 4
+        assert config.n_subarrays_y == 4
+        assert config.n_subarrays == 16
+
+    def test_non_rectangular_skips_constraint(self):
+        """Test that non-rectangular geometries skip constraint validation."""
+        # This would fail for rectangular with constraint enforced
+        config = ArrayConfig(
+            nx=10, ny=12,
+            geometry="circular",
+            max_subarray_nx=8, max_subarray_ny=8,
+            enforce_subarray_constraint=True
+        )
+        assert config.nx == 10
+        assert config.ny == 12
+
+    def test_valid_power_of_two_sizes(self):
+        """Test various valid power-of-two array sizes."""
+        for size in [2, 4, 8, 16, 32]:
+            config = ArrayConfig(nx=size, ny=size)
+            assert config.nx == size
+            assert config.ny == size
+
+    def test_large_array_multiple_subarrays(self):
+        """Test large array with multiple sub-arrays."""
+        config = ArrayConfig(nx=64, ny=32, max_subarray_nx=16, max_subarray_ny=8)
+        assert config.n_subarrays_x == 4  # 64/16
+        assert config.n_subarrays_y == 4  # 32/8
+        assert config.n_subarrays == 16
+        assert config.elements_per_subarray == 128  # 16*8
+
+
 class TestRFChainConfig:
     """Tests for RFChainConfig."""
 

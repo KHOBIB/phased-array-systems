@@ -66,6 +66,7 @@ def main():
 
     print(f"\nArchitecture: {architecture.name}")
     print(f"  Array: {array_config.nx}x{array_config.ny} = {architecture.n_elements} elements")
+    print(f"  Sub-arrays: {array_config.n_subarrays_x}x{array_config.n_subarrays_y} = {array_config.n_subarrays} total")
     print(f"  TX Power/Element: {rf_config.tx_power_w_per_elem} W")
     print(f"  Total TX Power: {architecture.n_elements * rf_config.tx_power_w_per_elem} W")
 
