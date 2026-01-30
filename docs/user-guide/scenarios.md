@@ -79,9 +79,9 @@ Currently supported:
 
 Free space path loss:
 
-\\[
+$$
 L_{FSPL} = 20 \log_{10}(4\pi d f / c)
-\\]
+$$
 
 ### Extra Losses
 
@@ -147,8 +147,8 @@ scenario = RadarDetectionScenario(
 
 | Type | Description | Gain |
 |------|-------------|------|
-| `"coherent"` | Phase-coherent integration | \\(N\\) (linear) |
-| `"noncoherent"` | Magnitude-only integration | \\(\sqrt{N}\\) (approx) |
+| `"coherent"` | Phase-coherent integration | $N$ (linear) |
+| `"noncoherent"` | Magnitude-only integration | $\sqrt{N}$ (approx) |
 
 ## ScenarioBase
 

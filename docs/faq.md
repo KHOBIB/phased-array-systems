@@ -154,7 +154,7 @@ for batch in batches:
 
 If pre-computed antenna metrics aren't provided, gain is approximated:
 
-\\[G \approx \eta \cdot 4\pi \cdot n_x d_x \cdot n_y d_y\\]
+$$G \approx \eta \cdot 4\pi \cdot n_x d_x \cdot n_y d_y$$
 
 For accurate patterns, use the full antenna adapter with `phased-array-modeling`.
 

@@ -16,20 +16,20 @@ The radar detection model calculates:
 
 The fundamental radar equation:
 
-\\[
+$$
 SNR = \frac{P_t G^2 \lambda^2 \sigma}{(4\pi)^3 R^4 k T_s B_n L_s}
-\\]
+$$
 
 Where:
-- \\(P_t\\) = Peak transmit power (W)
-- \\(G\\) = Antenna gain (linear)
-- \\(\lambda\\) = Wavelength (m)
-- \\(\sigma\\) = Target radar cross section (m²)
-- \\(R\\) = Target range (m)
-- \\(k\\) = Boltzmann constant
-- \\(T_s\\) = System noise temperature (K)
-- \\(B_n\\) = Noise bandwidth (Hz)
-- \\(L_s\\) = System losses (linear)
+- $P_t$ = Peak transmit power (W)
+- $G$ = Antenna gain (linear)
+- $\lambda$ = Wavelength (m)
+- $\sigma$ = Target radar cross section (m²)
+- $R$ = Target range (m)
+- $k$ = Boltzmann constant
+- $T_s$ = System noise temperature (K)
+- $B_n$ = Noise bandwidth (Hz)
+- $L_s$ = System losses (linear)
 
 ## Basic Usage
 
@@ -92,9 +92,9 @@ The required SNR depends on:
 
 For Swerling 0 (non-fluctuating):
 
-\\[
+$$
 SNR_{req} = \frac{[\text{erfc}^{-1}(2P_{fa}) - \text{erfc}^{-1}(2P_d)]^2}{2}
-\\]
+$$
 
 ### Swerling Target Models
 
@@ -119,9 +119,9 @@ scenario_sw3 = RadarDetectionScenario(..., swerling_model=3)  # Ship
 
 Maintains phase information; provides linear SNR improvement:
 
-\\[
+$$
 SNR_{integrated} = N \cdot SNR_{single}
-\\]
+$$
 
 ```python
 scenario = RadarDetectionScenario(
@@ -136,9 +136,9 @@ scenario = RadarDetectionScenario(
 
 Magnitude-only; provides approximately √N improvement:
 
-\\[
+$$
 SNR_{integrated} \approx \sqrt{N} \cdot SNR_{single}
-\\]
+$$
 
 ```python
 scenario = RadarDetectionScenario(
@@ -313,9 +313,9 @@ print(df)
 
 Radar performance scales with power × aperture:
 
-\\[
+$$
 PA = P_t \cdot A_{eff} = P_t \cdot \frac{G \lambda^2}{4\pi}
-\\]
+$$
 
 Trade off between:
 - More power (higher cost, heat)

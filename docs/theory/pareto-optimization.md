@@ -12,19 +12,19 @@ In engineering design, we often face conflicting objectives (e.g., minimize cost
 
 A multi-objective optimization problem:
 
-\\[
+$$
 \begin{aligned}
 \text{minimize} \quad & \mathbf{f}(\mathbf{x}) = [f_1(\mathbf{x}), f_2(\mathbf{x}), ..., f_k(\mathbf{x})] \\
 \text{subject to} \quad & \mathbf{g}(\mathbf{x}) \leq 0 \\
 & \mathbf{x} \in \mathcal{X}
 \end{aligned}
-\\]
+$$
 
 Where:
-- \\(\mathbf{x}\\) = design variables
-- \\(\mathbf{f}\\) = objective functions
-- \\(\mathbf{g}\\) = constraints
-- \\(\mathcal{X}\\) = feasible design space
+- $\mathbf{x}$ = design variables
+- $\mathbf{f}$ = objective functions
+- $\mathbf{g}$ = constraints
+- $\mathcal{X}$ = feasible design space
 
 ### Single vs. Multi-Objective
 
@@ -38,10 +38,10 @@ Where:
 
 ### Definition
 
-Design \\(\mathbf{a}\\) **dominates** design \\(\mathbf{b}\\) (written \\(\mathbf{a} \prec \mathbf{b}\\)) if:
+Design $\mathbf{a}$ **dominates** design $\mathbf{b}$ (written $\mathbf{a} \prec \mathbf{b}$) if:
 
-1. \\(f_i(\mathbf{a}) \leq f_i(\mathbf{b})\\) for all objectives \\(i\\) (at least as good)
-2. \\(f_j(\mathbf{a}) < f_j(\mathbf{b})\\) for at least one objective \\(j\\) (strictly better)
+1. $f_i(\mathbf{a}) \leq f_i(\mathbf{b})$ for all objectives $i$ (at least as good)
+2. $f_j(\mathbf{a}) < f_j(\mathbf{b})$ for at least one objective $j$ (strictly better)
 
 ### Example
 
@@ -60,7 +60,7 @@ Design A dominates C because: cost(A) < cost(C) and -EIRP(A) < -EIRP(C).
 
 ### Definition
 
-A design \\(\mathbf{x}^*\\) is **Pareto optimal** (or non-dominated) if there exists no other feasible design that dominates it.
+A design $\mathbf{x}^*$ is **Pareto optimal** (or non-dominated) if there exists no other feasible design that dominates it.
 
 The set of all Pareto optimal designs forms the **Pareto frontier** (or Pareto front).
 
@@ -72,9 +72,9 @@ The set of all Pareto optimal designs forms the **Pareto frontier** (or Pareto f
 
 ### Mathematical Definition
 
-\\[
+$$
 \mathcal{P} = \{\mathbf{x}^* \in \mathcal{X} : \nexists \mathbf{x} \in \mathcal{X} \text{ such that } \mathbf{x} \prec \mathbf{x}^*\}
-\\]
+$$
 
 ## Pareto Frontier
 
@@ -102,11 +102,11 @@ Since all Pareto solutions are optimal, additional criteria are needed to rank t
 
 ### Weighted Sum
 
-\\[
+$$
 \min_{\mathbf{x}} \sum_{i=1}^{k} w_i f_i(\mathbf{x})
-\\]
+$$
 
-Where \\(\sum w_i = 1\\).
+Where $\sum w_i = 1$.
 
 Advantages:
 - Simple
@@ -121,21 +121,21 @@ Limitations:
 Technique for Order Preference by Similarity to Ideal Solution.
 
 1. Normalize objectives
-2. Define ideal point: \\(\mathbf{f}^+\\) (best of each)
-3. Define anti-ideal: \\(\mathbf{f}^-\\) (worst of each)
+2. Define ideal point: $\mathbf{f}^+$ (best of each)
+3. Define anti-ideal: $\mathbf{f}^-$ (worst of each)
 4. Calculate distances:
-   \\[
+   $$
    d^+ = \sqrt{\sum_i w_i (f_i - f_i^+)^2}
-   \\]
-   \\[
+   $$
+   $$
    d^- = \sqrt{\sum_i w_i (f_i - f_i^-)^2}
-   \\]
+   $$
 5. Rank by relative closeness:
-   \\[
+   $$
    C = \frac{d^-}{d^+ + d^-}
-   \\]
+   $$
 
-Higher \\(C\\) is better (closer to ideal, farther from anti-ideal).
+Higher $C$ is better (closer to ideal, farther from anti-ideal).
 
 ## Hypervolume
 
@@ -145,11 +145,11 @@ The hypervolume indicator measures Pareto front quality.
 
 Volume of objective space dominated by the Pareto front, bounded by a reference point:
 
-\\[
+$$
 HV = \text{Vol}\left(\bigcup_{i=1}^{|\mathcal{P}|} \{\mathbf{f} : \mathbf{f}_i \prec \mathbf{f} \prec \mathbf{r}\}\right)
-\\]
+$$
 
-Where \\(\mathbf{r}\\) is the reference point.
+Where $\mathbf{r}$ is the reference point.
 
 ### Properties
 
@@ -177,9 +177,9 @@ The "knee" of the Pareto front represents designs with the best trade-off ratio.
 
 For normalized objectives, the knee minimizes:
 
-\\[
+$$
 d = \sqrt{f_1^2 + f_2^2 + ... + f_k^2}
-\\]
+$$
 
 ### Significance
 
@@ -191,19 +191,19 @@ d = \sqrt{f_1^2 + f_2^2 + ... + f_k^2}
 
 ### Pareto Extraction Complexity
 
-For \\(n\\) designs and \\(k\\) objectives:
-- Naive: \\(O(n^2 k)\\)
-- Efficient algorithms: \\(O(n \log^{k-1} n)\\)
+For $n$ designs and $k$ objectives:
+- Naive: $O(n^2 k)$
+- Efficient algorithms: $O(n \log^{k-1} n)$
 
 ### Epsilon-Dominance
 
 Relaxed dominance for diversity:
 
-\\(\mathbf{a}\\) \\(\varepsilon\\)-dominates \\(\mathbf{b}\\) if:
+$\mathbf{a}$ $\varepsilon$-dominates $\mathbf{b}$ if:
 
-\\[
+$$
 f_i(\mathbf{a}) \leq (1 + \varepsilon) f_i(\mathbf{b}) \quad \forall i
-\\]
+$$
 
 Reduces Pareto set size while maintaining coverage.
 

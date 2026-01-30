@@ -128,21 +128,21 @@ print(f"Non-coherent Gain: {gain_noncoherent:.1f} dB")  # ~6.0 dB
 
 ## Radar Range Equation
 
-\\[
+$$
 SNR = \frac{P_t G^2 \lambda^2 \sigma}{(4\pi)^3 R^4 k T_s B_n L_s}
-\\]
+$$
 
 Where:
 
-- \\(P_t\\) = Peak transmit power (W)
-- \\(G\\) = Antenna gain (linear)
-- \\(\lambda\\) = Wavelength (m)
-- \\(\sigma\\) = Target RCS (m²)
-- \\(R\\) = Target range (m)
-- \\(k\\) = Boltzmann constant
-- \\(T_s\\) = System noise temperature (K)
-- \\(B_n\\) = Noise bandwidth (Hz)
-- \\(L_s\\) = System losses (linear)
+- $P_t$ = Peak transmit power (W)
+- $G$ = Antenna gain (linear)
+- $\lambda$ = Wavelength (m)
+- $\sigma$ = Target RCS (m²)
+- $R$ = Target range (m)
+- $k$ = Boltzmann constant
+- $T_s$ = System noise temperature (K)
+- $B_n$ = Noise bandwidth (Hz)
+- $L_s$ = System losses (linear)
 
 ## Swerling Models
 

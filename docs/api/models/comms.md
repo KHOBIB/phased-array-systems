@@ -98,42 +98,42 @@ print(f"FSPL: {loss:.1f} dB")  # ~152.4 dB
 
 ### EIRP
 
-\\[
+$$
 EIRP = P_{tx} + G_{tx} - L_{tx}
-\\]
+$$
 
 ### Path Loss
 
-\\[
+$$
 L_{path} = L_{FSPL} + L_{atm} + L_{rain} + L_{pol}
-\\]
+$$
 
 ### Free Space Path Loss
 
-\\[
+$$
 L_{FSPL} = 20 \log_{10}\left(\frac{4\pi d f}{c}\right)
-\\]
+$$
 
 ### Received Power
 
-\\[
+$$
 P_{rx} = EIRP - L_{path} + G_{rx}
-\\]
+$$
 
 ### Noise Power
 
-\\[
+$$
 N = 10 \log_{10}(kTB) + NF
-\\]
+$$
 
 ### SNR and Margin
 
-\\[
+$$
 SNR = P_{rx} - N
-\\]
-\\[
+$$
+$$
 Margin = SNR - SNR_{required}
-\\]
+$$
 
 ## See Also
 

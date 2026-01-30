@@ -98,37 +98,37 @@ print(f"Cost per dB EIRP: ${cost_per_db:.0f}/dB")
 
 ### RF Power
 
-\\[
+$$
 P_{RF} = P_{elem} \times N
-\\]
+$$
 
 ### DC Power
 
-\\[
+$$
 P_{DC} = \frac{P_{RF}}{\eta_{PA}}
-\\]
+$$
 
 ### Prime Power
 
 Prime power includes additional overhead (typically DC power plus auxiliaries):
 
-\\[
+$$
 P_{prime} = P_{DC} \times (1 + overhead)
-\\]
+$$
 
 ## Cost Equations
 
 ### Recurring Cost
 
-\\[
+$$
 C_{recurring} = C_{elem} \times N
-\\]
+$$
 
 ### Total Cost
 
-\\[
+$$
 C_{total} = C_{recurring} + C_{NRE} + C_{integration}
-\\]
+$$
 
 ## Trade-offs
 

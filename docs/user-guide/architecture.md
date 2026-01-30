@@ -144,17 +144,17 @@ rf = RFChainConfig(
 
 Total transmit power:
 
-\\[
+$$
 P_{tx,total} = P_{tx,elem} \times N_{elements}
-\\]
+$$
 
 DC power consumption:
 
-\\[
+$$
 P_{DC} = \frac{P_{tx,total}}{\eta_{PA}}
-\\]
+$$
 
-Where \\(\eta_{PA}\\) is the PA efficiency.
+Where $\eta_{PA}$ is the PA efficiency.
 
 ## CostConfig
 
@@ -182,15 +182,15 @@ cost = CostConfig(
 
 Total recurring cost:
 
-\\[
+$$
 C_{recurring} = C_{elem} \times N_{elements}
-\\]
+$$
 
 Total cost:
 
-\\[
+$$
 C_{total} = C_{recurring} + C_{NRE} + C_{integration}
-\\]
+$$
 
 ## Architecture Class
 
@@ -296,7 +296,7 @@ arch = config.get_architecture()
 
 ### 1. Use Realistic Spacing
 
-Half-wavelength spacing (\\(d = 0.5\lambda\\)) is typical:
+Half-wavelength spacing ($d = 0.5\lambda$) is typical:
 
 ```python
 ArrayConfig(dx_lambda=0.5, dy_lambda=0.5)  # Standard

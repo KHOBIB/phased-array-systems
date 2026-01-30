@@ -89,11 +89,11 @@ print(f"Scan Loss: {metrics['scan_loss_db']:.1f} dB")
 
 When the full antenna adapter is not used, gain is approximated:
 
-\\[
+$$
 G \approx 4\pi \cdot n_x d_x \cdot n_y d_y
-\\]
+$$
 
-Where \\(d_x, d_y\\) are element spacings in wavelengths.
+Where $d_x, d_y$ are element spacings in wavelengths.
 
 This approximation is used in the link budget model when antenna metrics aren't pre-computed.
 

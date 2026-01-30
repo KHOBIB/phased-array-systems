@@ -16,42 +16,42 @@ The link budget model calculates:
 
 The fundamental link budget equation:
 
-\\[
+$$
 P_{rx} = EIRP - L_{path} + G_{rx}
-\\]
+$$
 
 Where:
-- \\(P_{rx}\\) = Received power (dBW)
-- \\(EIRP\\) = Effective Isotropic Radiated Power (dBW)
-- \\(L_{path}\\) = Total path loss (dB)
-- \\(G_{rx}\\) = Receive antenna gain (dBi)
+- $P_{rx}$ = Received power (dBW)
+- $EIRP$ = Effective Isotropic Radiated Power (dBW)
+- $L_{path}$ = Total path loss (dB)
+- $G_{rx}$ = Receive antenna gain (dBi)
 
 ### EIRP Calculation
 
-\\[
+$$
 EIRP = P_{tx} + G_{tx} - L_{tx}
-\\]
+$$
 
 Where:
-- \\(P_{tx}\\) = Total transmit power (dBW)
-- \\(G_{tx}\\) = Transmit antenna gain (dBi)
-- \\(L_{tx}\\) = Transmit losses (feed + system)
+- $P_{tx}$ = Total transmit power (dBW)
+- $G_{tx}$ = Transmit antenna gain (dBi)
+- $L_{tx}$ = Transmit losses (feed + system)
 
 ### SNR Calculation
 
-\\[
+$$
 SNR = P_{rx} - N
-\\]
+$$
 
-\\[
+$$
 N = 10 \log_{10}(kTB) + NF
-\\]
+$$
 
 Where:
-- \\(k\\) = Boltzmann constant (1.38×10⁻²³ J/K)
-- \\(T\\) = Noise temperature (K)
-- \\(B\\) = Bandwidth (Hz)
-- \\(NF\\) = Noise figure (dB)
+- $k$ = Boltzmann constant (1.38×10⁻²³ J/K)
+- $T$ = Noise temperature (K)
+- $B$ = Bandwidth (Hz)
+- $NF$ = Noise figure (dB)
 
 ## Basic Usage
 
@@ -143,9 +143,9 @@ print(f"Margin: {result['margin_db']:.1f} dB")
 
 The default model:
 
-\\[
+$$
 L_{FSPL} = 20 \log_{10}\left(\frac{4\pi d f}{c}\right)
-\\]
+$$
 
 ```python
 from phased_array_systems.models.comms.propagation import compute_fspl
@@ -190,11 +190,11 @@ context = {
 
 Without pre-computed values, gain is approximated:
 
-\\[
+$$
 G \approx 4\pi \cdot n_x d_x \cdot n_y d_y
-\\]
+$$
 
-Where \\(d_x, d_y\\) are spacings in wavelengths.
+Where $d_x, d_y$ are spacings in wavelengths.
 
 ## Scan Loss
 
