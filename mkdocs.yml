@@ -1,0 +1,166 @@
+site_name: phased-array-systems
+site_description: Phased array antenna system design, optimization, and visualization for wireless communications and radar applications
+site_url: https://jman4162.github.io/phased-array-systems
+repo_url: https://github.com/jman4162/phased-array-systems
+repo_name: jman4162/phased-array-systems
+copyright: Copyright &copy; 2024 phased-array-systems contributors
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - navigation.indexes
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - toc.follow
+  icon:
+    repo: fontawesome/brands/github
+  logo: https://raw.githubusercontent.com/jman4162/phased-array-systems/main/docs/assets/logo.svg
+  favicon: https://raw.githubusercontent.com/jman4162/phased-array-systems/main/docs/assets/favicon.ico
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+            members_order: source
+            docstring_style: google
+            docstring_section_style: spacy
+            merge_init_into_class: true
+            separate_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+  - mkdocs-jupyter:
+      include_source: true
+      execute: false
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - attr_list
+  - md_in_html
+  - tables
+  - footnotes
+  - def_list
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/jman4162/phased-array-systems
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/phased-array-systems/
+  version:
+    provider: mike
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - getting-started/index.md
+    - Installation: getting-started/installation.md
+    - Quickstart: getting-started/quickstart.md
+    - Core Concepts: getting-started/concepts.md
+  - User Guide:
+    - user-guide/index.md
+    - Architecture Configuration: user-guide/architecture.md
+    - Scenarios: user-guide/scenarios.md
+    - Requirements: user-guide/requirements.md
+    - Link Budget Modeling: user-guide/link-budget.md
+    - Radar Detection: user-guide/radar-detection.md
+    - Trade Studies: user-guide/trade-studies.md
+    - Pareto Analysis: user-guide/pareto-analysis.md
+    - Visualization: user-guide/visualization.md
+    - Reports: user-guide/reports.md
+  - Tutorials:
+    - tutorials/index.md
+    - Communications Trade Study: tutorials/comms-trade-study.md
+    - Radar Detection Trade: tutorials/radar-detection-trade.md
+    - Config-Driven Workflow: tutorials/config-driven-workflow.md
+    - Sensitivity Analysis: tutorials/sensitivity-analysis.md
+  - CLI Reference:
+    - cli/index.md
+    - pasys run: cli/run.md
+    - pasys doe: cli/doe.md
+    - pasys report: cli/report.md
+    - pasys pareto: cli/pareto.md
+  - API Reference:
+    - api/index.md
+    - Architecture: api/architecture.md
+    - Scenarios: api/scenarios.md
+    - Requirements: api/requirements.md
+    - Models:
+      - api/models/index.md
+      - Antenna: api/models/antenna.md
+      - Communications: api/models/comms.md
+      - Radar: api/models/radar.md
+      - SWaP-C: api/models/swapc.md
+    - Trades: api/trades.md
+    - Visualization: api/viz.md
+    - I/O: api/io.md
+    - Reports: api/reports.md
+  - Theory:
+    - theory/index.md
+    - Phased Array Fundamentals: theory/phased-arrays.md
+    - Link Budget Equations: theory/link-budget-equations.md
+    - Radar Equation: theory/radar-equation.md
+    - Pareto Optimization: theory/pareto-optimization.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+  - FAQ: faq.md

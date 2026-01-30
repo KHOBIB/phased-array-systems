@@ -57,15 +57,25 @@ plotting = [
     "plotly>=5.0",
     "kaleido>=0.2",
 ]
+docs = [
+    "mkdocs>=1.5",
+    "mkdocs-material>=9.4",
+    "mkdocstrings[python]>=0.24",
+    "mkdocs-jupyter>=0.24",
+    "mkdocs-gen-files>=0.5",
+    "mkdocs-literate-nav>=0.6",
+    "mkdocs-section-index>=0.3",
+]
 
 [project.scripts]
 pasys = "phased_array_systems.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/jman4162/phased-array-systems"
-Documentation = "https://github.com/jman4162/phased-array-systems#readme"
+Documentation = "https://jman4162.github.io/phased-array-systems"
 Repository = "https://github.com/jman4162/phased-array-systems"
 Issues = "https://github.com/jman4162/phased-array-systems/issues"
+Changelog = "https://jman4162.github.io/phased-array-systems/changelog"
 
 [tool.hatch.version]
 path = "src/phased_array_systems/__about__.py"

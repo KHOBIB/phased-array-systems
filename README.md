@@ -1,18 +1,43 @@
 # phased-array-systems
 
 [![CI](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml)
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jman4162.github.io/phased-array-systems)
 [![PyPI version](https://badge.fury.io/py/phased-array-systems.svg)](https://badge.fury.io/py/phased-array-systems)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Phased array antenna system design, optimization, and performance visualization for wireless communications and radar applications.
 
+**[Documentation](https://jman4162.github.io/phased-array-systems)** |
+**[Getting Started](https://jman4162.github.io/phased-array-systems/getting-started/quickstart/)** |
+**[API Reference](https://jman4162.github.io/phased-array-systems/api/)**
+
+## Why phased-array-systems?
+
+- **Model-Based Workflow**: MBSE/MDAO approach from requirements through optimized designs
+- **Requirements-Driven**: Every evaluation produces pass/fail with margins and traceability
+- **Trade-Space Exploration**: DOE generation and Pareto analysis for systematic design exploration
+- **Dual Application**: Supports both communications link budgets and radar detection scenarios
+- **Reproducible**: Config-driven workflow with seed control and version stamping
+
+## Workflow
+
+```
+Config (YAML/JSON) → Architecture + Scenario → DOE Generation → Batch Evaluation
+       ↓                                                              ↓
+  Requirements ───────────────────────────────────────────→ Verification
+                                                                   ↓
+                    Reports ← Visualization ← Pareto Extraction ←──┘
+```
+
 ## Features
 
 - **Requirements as first-class objects**: Every run produces pass/fail + margins with traceability
 - **Trade-space exploration**: DOE + Pareto optimization over single-point designs
+- **Communications & Radar**: Link budget analysis and radar detection modeling
 - **Flat metrics dictionary**: All models return consistent `dict[str, float]` for interchange
 - **Config-driven reproducibility**: Stable case IDs, seed control, version stamping
+- **CLI and Python API**: Use from command line or integrate into scripts
 
 ## Installation
 
@@ -126,6 +151,49 @@ pytest tests/ -v
 # Run linting
 ruff check .
 ```
+
+## CLI
+
+```bash
+# Single case evaluation
+pasys run config.yaml
+
+# DOE batch study
+pasys doe config.yaml -n 100 --method lhs
+
+# Generate report
+pasys report results.parquet --format html
+
+# Extract Pareto frontier
+pasys pareto results.parquet -x cost_usd -y eirp_dbw --plot
+```
+
+## Documentation
+
+Full documentation is available at **[jman4162.github.io/phased-array-systems](https://jman4162.github.io/phased-array-systems)**:
+
+- [Getting Started](https://jman4162.github.io/phased-array-systems/getting-started/quickstart/) - Installation and quickstart
+- [User Guide](https://jman4162.github.io/phased-array-systems/user-guide/) - Detailed usage guides
+- [Tutorials](https://jman4162.github.io/phased-array-systems/tutorials/) - Step-by-step walkthroughs
+- [API Reference](https://jman4162.github.io/phased-array-systems/api/) - Complete API documentation
+- [Theory](https://jman4162.github.io/phased-array-systems/theory/) - Background equations and theory
+
+## Citation
+
+If you use phased-array-systems in academic work, please cite:
+
+```bibtex
+@software{phased_array_systems,
+  title = {phased-array-systems: Phased Array Antenna System Design and Optimization},
+  author = {{phased-array-systems contributors}},
+  year = {2024},
+  url = {https://github.com/jman4162/phased-array-systems}
+}
+```
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
