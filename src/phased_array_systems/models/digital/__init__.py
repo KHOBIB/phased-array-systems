@@ -1,31 +1,6 @@
-"""Model blocks for system analysis."""
+"""Digital array models for DAC/ADC, bandwidth, and scheduling."""
 
-from phased_array_systems.models.base import ModelBlock
-
-# RF cascade models
-from phased_array_systems.models.rf import (
-    # Noise figure
-    friis_noise_figure,
-    noise_figure_to_temp,
-    noise_temp_to_figure,
-    system_noise_temperature,
-    # Gain
-    cascade_gain,
-    cascade_gain_db,
-    # Dynamic range
-    cascade_iip3,
-    cascade_oip3,
-    sfdr_from_iip3,
-    sfdr_from_oip3,
-    mds_from_noise_figure,
-    # Complete cascade
-    RFStage,
-    cascade_analysis,
-)
-
-# Digital array models
-from phased_array_systems.models.digital import (
-    # Converters
+from phased_array_systems.models.digital.converters import (
     enob_to_sfdr,
     sfdr_to_enob,
     enob_to_snr,
@@ -35,14 +10,18 @@ from phased_array_systems.models.digital import (
     max_signal_bandwidth,
     adc_dynamic_range,
     dac_output_power,
-    # Bandwidth
+)
+
+from phased_array_systems.models.digital.bandwidth import (
     beam_bandwidth_product,
     max_simultaneous_beams,
     digital_beamformer_data_rate,
     channelizer_output_rate,
     processing_margin,
     beamformer_operations,
-    # Scheduling
+)
+
+from phased_array_systems.models.digital.scheduling import (
     Dwell,
     Timeline,
     Function,
@@ -53,21 +32,6 @@ from phased_array_systems.models.digital import (
 )
 
 __all__ = [
-    "ModelBlock",
-    # RF Cascade
-    "friis_noise_figure",
-    "noise_figure_to_temp",
-    "noise_temp_to_figure",
-    "system_noise_temperature",
-    "cascade_gain",
-    "cascade_gain_db",
-    "cascade_iip3",
-    "cascade_oip3",
-    "sfdr_from_iip3",
-    "sfdr_from_oip3",
-    "mds_from_noise_figure",
-    "RFStage",
-    "cascade_analysis",
     # Converters
     "enob_to_sfdr",
     "sfdr_to_enob",
