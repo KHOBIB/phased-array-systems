@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml/badge.svg)](https://github.com/jman4162/phased-array-systems/actions/workflows/ci.yml)
 [![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://jman4162.github.io/phased-array-systems)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Live_Demo-FF4B4B?logo=streamlit)](https://phased-array-systems.streamlit.app)
 [![PyPI version](https://badge.fury.io/py/phased-array-systems.svg)](https://badge.fury.io/py/phased-array-systems)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -9,6 +10,7 @@
 Phased array antenna system design, optimization, and performance visualization for wireless communications and radar applications.
 
 **[Documentation](https://jman4162.github.io/phased-array-systems)** |
+**[Live Demo](https://phased-array-systems.streamlit.app)** |
 **[Getting Started](https://jman4162.github.io/phased-array-systems/getting-started/quickstart/)** |
 **[API Reference](https://jman4162.github.io/phased-array-systems/api/)**
 
