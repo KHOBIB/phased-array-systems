@@ -33,10 +33,8 @@ def enob_to_snr(enob: float) -> float:
         SNR in dB
 
     Example:
-        >>> enob_to_snr(12)
-        74.0
-        >>> enob_to_snr(14)
-        86.04
+        enob_to_snr(12)   # Returns 74.0
+        enob_to_snr(14)   # Returns 86.04
     """
     return 6.02 * enob + 1.76
 
@@ -56,8 +54,7 @@ def snr_to_enob(snr_db: float) -> float:
         Effective number of bits
 
     Example:
-        >>> snr_to_enob(74.0)
-        12.0
+        snr_to_enob(74.0)  # Returns 12.0
     """
     return (snr_db - 1.76) / 6.02
 
@@ -76,10 +73,8 @@ def enob_to_sfdr(enob: float, margin_db: float = 0.0) -> float:
         Estimated SFDR in dB
 
     Example:
-        >>> enob_to_sfdr(12)
-        74.0
-        >>> enob_to_sfdr(12, margin_db=6)  # Conservative estimate
-        68.0
+        enob_to_sfdr(12)                   # Returns 74.0
+        enob_to_sfdr(12, margin_db=6)      # Returns 68.0 (conservative)
     """
     return enob_to_snr(enob) - margin_db
 
@@ -119,8 +114,7 @@ def quantization_noise_floor(
         Noise floor spectral density in dBm/Hz
 
     Example:
-        >>> quantization_noise_floor(12, 0, 100e6, 250e6)
-        -154.0  # Approximate
+        quantization_noise_floor(12, 0, 100e6, 250e6)  # Returns ~-154.0
     """
     snr_db = enob_to_snr(enob)
     nyquist_bw = sample_rate_hz / 2
@@ -148,8 +142,7 @@ def sample_rate_for_bandwidth(
         Required sample rate in Hz
 
     Example:
-        >>> sample_rate_for_bandwidth(100e6)
-        250000000.0
+        sample_rate_for_bandwidth(100e6)  # Returns 250e6
     """
     return signal_bandwidth_hz * oversampling_ratio
 
@@ -170,8 +163,7 @@ def max_signal_bandwidth(
         Maximum signal bandwidth in Hz
 
     Example:
-        >>> max_signal_bandwidth(1e9)
-        400000000.0
+        max_signal_bandwidth(1e9)  # Returns 400e6
     """
     return sample_rate_hz / oversampling_ratio
 
@@ -201,8 +193,8 @@ def adc_dynamic_range(
             - dynamic_range_db: Usable dynamic range
 
     Example:
-        >>> result = adc_dynamic_range(14, noise_figure_db=3, bandwidth_hz=100e6)
-        >>> print(f"Dynamic range: {result['dynamic_range_db']:.1f} dB")
+        result = adc_dynamic_range(14, noise_figure_db=3, bandwidth_hz=100e6)
+        print(f"Dynamic range: {result['dynamic_range_db']:.1f} dB")
     """
     snr_db = enob_to_snr(enob)
 
@@ -255,8 +247,8 @@ def dac_output_power(
             - noise_floor_dbm: Quantization noise floor
 
     Example:
-        >>> result = dac_output_power(14, full_scale_dbm=10, backoff_db=6)
-        >>> print(f"Operating power: {result['operating_power_dbm']:.1f} dBm")
+        result = dac_output_power(14, full_scale_dbm=10, backoff_db=6)
+        print(f"Operating power: {result['operating_power_dbm']:.1f} dBm")
     """
     snr_db = enob_to_snr(enob)
     sfdr_db = enob_to_sfdr(enob)

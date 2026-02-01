@@ -117,9 +117,9 @@ def timeline_utilization(timeline: Timeline) -> dict[str, float]:
             - by_function_percent: Dict of function -> percentage
 
     Example:
-        >>> tl = Timeline(dwells=[...], frame_time_ms=100)
-        >>> util = timeline_utilization(tl)
-        >>> print(f"Utilization: {util['total_utilization']*100:.1f}%")
+        tl = Timeline(dwells=[...], frame_time_ms=100)
+        util = timeline_utilization(tl)
+        print(f"Utilization: {util['total_utilization']*100:.1f}%")
     """
     total_dwell_ms = timeline.total_dwell_time_ms
     idle_time_ms = max(0, timeline.frame_time_ms - total_dwell_ms)
@@ -169,13 +169,13 @@ def max_update_rate(
             - scan_time_s: Time for one complete scan
 
     Example:
-        >>> # Search ±60° az, ±30° el with 3° beam
-        >>> result = max_update_rate(
-        ...     scan_volume_sr=2.0,  # ~hemisphere
-        ...     beam_solid_angle_sr=0.003,  # ~3° beam
-        ...     dwell_time_us=100
-        ... )
-        >>> print(f"Update rate: {result['update_rate_hz']:.2f} Hz")
+        # Search ±60° az, ±30° el with 3° beam
+        result = max_update_rate(
+            scan_volume_sr=2.0,       # ~hemisphere
+            beam_solid_angle_sr=0.003,  # ~3° beam
+            dwell_time_us=100,
+        )
+        print(f"Update rate: {result['update_rate_hz']:.2f} Hz")
     """
     n_beam_positions = math.ceil(scan_volume_sr / beam_solid_angle_sr)
     time_per_position_us = dwell_time_us + overhead_us
@@ -218,14 +218,14 @@ def search_timeline(
         Timeline with search dwells
 
     Example:
-        >>> tl = search_timeline(
-        ...     azimuth_range_deg=(-60, 60),
-        ...     elevation_range_deg=(0, 30),
-        ...     azimuth_step_deg=3.0,
-        ...     elevation_step_deg=3.0,
-        ...     dwell_time_us=100
-        ... )
-        >>> print(f"Generated {tl.n_dwells} dwells")
+        tl = search_timeline(
+            azimuth_range_deg=(-60, 60),
+            elevation_range_deg=(0, 30),
+            azimuth_step_deg=3.0,
+            elevation_step_deg=3.0,
+            dwell_time_us=100,
+        )
+        print(f"Generated {tl.n_dwells} dwells")
     """
     dwells = []
 
@@ -283,17 +283,17 @@ def interleaved_timeline(
         Timeline with interleaved function dwells
 
     Example:
-        >>> tl = interleaved_timeline(
-        ...     functions=[
-        ...         {"function": Function.RADAR_SEARCH, "time_percent": 60,
-        ...          "dwell_time_us": 100, "dwells_per_burst": 10},
-        ...         {"function": Function.RADAR_TRACK, "time_percent": 30,
-        ...          "dwell_time_us": 50, "dwells_per_burst": 5},
-        ...         {"function": Function.ESM, "time_percent": 10,
-        ...          "dwell_time_us": 200, "dwells_per_burst": 2},
-        ...     ],
-        ...     frame_time_ms=100
-        ... )
+        tl = interleaved_timeline(
+            functions=[
+                {"function": Function.RADAR_SEARCH, "time_percent": 60,
+                 "dwell_time_us": 100, "dwells_per_burst": 10},
+                {"function": Function.RADAR_TRACK, "time_percent": 30,
+                 "dwell_time_us": 50, "dwells_per_burst": 5},
+                {"function": Function.ESM, "time_percent": 10,
+                 "dwell_time_us": 200, "dwells_per_burst": 2},
+            ],
+            frame_time_ms=100,
+        )
     """
     dwells = []
 

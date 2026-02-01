@@ -43,8 +43,7 @@ def noise_figure_to_temp(nf_db: float, t0: float = T0) -> float:
         Equivalent noise temperature in Kelvin
 
     Example:
-        >>> noise_figure_to_temp(3.0)  # 3 dB NF
-        288.6  # Approximately
+        noise_figure_to_temp(3.0)  # 3 dB NF -> ~288.6 K
     """
     f_linear = 10 ** (nf_db / 10)
     return t0 * (f_linear - 1)
@@ -63,8 +62,7 @@ def noise_temp_to_figure(te: float, t0: float = T0) -> float:
         Noise figure in dB
 
     Example:
-        >>> noise_temp_to_figure(290)
-        3.01  # Approximately
+        noise_temp_to_figure(290)  # 290 K -> ~3.01 dB
     """
     f_linear = 1 + te / t0
     return 10 * math.log10(f_linear)
@@ -93,12 +91,12 @@ def friis_noise_figure(
             - stage_contributions_db: NF contribution from each stage
 
     Example:
-        >>> # LNA (15 dB gain, 2 dB NF) -> Mixer (10 dB loss, 10 dB NF)
-        >>> result = friis_noise_figure([
-        ...     (15, 2),    # LNA
-        ...     (-10, 10),  # Mixer (loss = negative gain)
-        ... ])
-        >>> print(f"System NF: {result['total_nf_db']:.2f} dB")
+        # LNA (15 dB gain, 2 dB NF) -> Mixer (10 dB loss, 10 dB NF)
+        result = friis_noise_figure([
+            (15, 2),    # LNA
+            (-10, 10),  # Mixer (loss = negative gain)
+        ])
+        print(f"System NF: {result['total_nf_db']:.2f} dB")
     """
     if not stages:
         return {
@@ -166,11 +164,11 @@ def system_noise_temperature(
             - system_nf_db: Effective system noise figure
 
     Example:
-        >>> result = system_noise_temperature(
-        ...     antenna_temp_k=50,  # Cold sky
-        ...     receiver_nf_db=2.0,
-        ...     line_loss_db=0.5
-        ... )
+        result = system_noise_temperature(
+            antenna_temp_k=50,      # Cold sky
+            receiver_nf_db=2.0,
+            line_loss_db=0.5,
+        )
     """
     # Receiver noise temperature
     t_rx = noise_figure_to_temp(receiver_nf_db)
@@ -210,8 +208,7 @@ def cascade_gain(gains_db: list[float]) -> float:
         Total gain in dB
 
     Example:
-        >>> cascade_gain([20, -3, 15, -6])  # LNA, filter, amp, cable
-        26
+        cascade_gain([20, -3, 15, -6])  # LNA, filter, amp, cable -> 26 dB
     """
     return sum(gains_db)
 
@@ -248,11 +245,11 @@ def cascade_iip3(
             - total_gain_db: Cascaded gain
 
     Example:
-        >>> # LNA (15dB, +5dBm IIP3) -> Mixer (-10dB, +10dBm IIP3)
-        >>> result = cascade_iip3([
-        ...     (15, 5),
-        ...     (-10, 10),
-        ... ])
+        # LNA (15dB, +5dBm IIP3) -> Mixer (-10dB, +10dBm IIP3)
+        result = cascade_iip3([
+            (15, 5),
+            (-10, 10),
+        ])
     """
     if not stages:
         return {"iip3_dbm": float('inf'), "oip3_dbm": float('inf'), "total_gain_db": 0}
@@ -325,11 +322,11 @@ def sfdr_from_iip3(
             - max_signal_dbm: Maximum signal before spurs exceed noise
 
     Example:
-        >>> result = sfdr_from_iip3(
-        ...     iip3_dbm=5,
-        ...     noise_floor_dbm_hz=-170,
-        ...     bandwidth_hz=1e6
-        ... )
+        result = sfdr_from_iip3(
+            iip3_dbm=5,
+            noise_floor_dbm_hz=-170,
+            bandwidth_hz=1e6,
+        )
     """
     noise_floor_dbm = noise_floor_dbm_hz + 10 * math.log10(bandwidth_hz)
     sfdr_db = (2 / 3) * (iip3_dbm - noise_floor_dbm)
@@ -387,11 +384,11 @@ def mds_from_noise_figure(
             - ktb_dbm: Thermal noise power
 
     Example:
-        >>> result = mds_from_noise_figure(
-        ...     noise_figure_db=3,
-        ...     bandwidth_hz=1e6,
-        ...     snr_required_db=10
-        ... )
+        result = mds_from_noise_figure(
+            noise_figure_db=3,
+            bandwidth_hz=1e6,
+            snr_required_db=10,
+        )
     """
     # kT in dBm/Hz at T0
     kt_dbm_hz = 10 * math.log10(K_B * t0 * 1000)  # *1000 for mW
@@ -471,15 +468,15 @@ def cascade_analysis(
             - stage_names: Names of each stage
 
     Example:
-        >>> stages = [
-        ...     RFStage("LNA", gain_db=20, noise_figure_db=1.5, iip3_dbm=-5),
-        ...     RFStage("Filter", gain_db=-2, noise_figure_db=2, iip3_dbm=30),
-        ...     RFStage("Mixer", gain_db=-8, noise_figure_db=8, iip3_dbm=15),
-        ...     RFStage("IF Amp", gain_db=30, noise_figure_db=4, iip3_dbm=10),
-        ... ]
-        >>> result = cascade_analysis(stages, bandwidth_hz=10e6)
-        >>> print(f"System NF: {result['total_nf_db']:.2f} dB")
-        >>> print(f"SFDR: {result['sfdr_db']:.1f} dB")
+        stages = [
+            RFStage("LNA", gain_db=20, noise_figure_db=1.5, iip3_dbm=-5),
+            RFStage("Filter", gain_db=-2, noise_figure_db=2, iip3_dbm=30),
+            RFStage("Mixer", gain_db=-8, noise_figure_db=8, iip3_dbm=15),
+            RFStage("IF Amp", gain_db=30, noise_figure_db=4, iip3_dbm=10),
+        ]
+        result = cascade_analysis(stages, bandwidth_hz=10e6)
+        print(f"System NF: {result['total_nf_db']:.2f} dB")
+        print(f"SFDR: {result['sfdr_db']:.1f} dB")
     """
     if not stages:
         return {}
