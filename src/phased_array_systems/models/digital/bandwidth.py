@@ -33,9 +33,6 @@ def beam_bandwidth_product(
 
     Returns:
         Total beam-bandwidth product in Hz
-
-    Example:
-        beam_bandwidth_product(4, 100e6)  # Returns 400e6
     """
     return n_beams * bandwidth_per_beam_hz
 
@@ -57,9 +54,6 @@ def max_simultaneous_beams(
 
     Returns:
         Maximum number of simultaneous beams (integer)
-
-    Example:
-        max_simultaneous_beams(1e9, 100e6)  # Returns 9
     """
     effective_bw = processing_bandwidth_hz / overhead_factor
     return int(effective_bw / bandwidth_per_beam_hz)
@@ -89,12 +83,6 @@ def digital_beamformer_data_rate(
             - raw_rate_gbps: Raw data rate in Gbps
             - with_overhead_gbps: Rate including overhead
             - per_element_gbps: Rate per element
-
-    Example:
-        ```python
-        result = digital_beamformer_data_rate(256, 1e9, 14)
-        print(f"Total data rate: {result['with_overhead_gbps']:.1f} Gbps")
-        ```
     """
     raw_rate_bps = n_elements * sample_rate_hz * bits_per_sample * n_channels
     raw_rate_gbps = raw_rate_bps / 1e9
@@ -135,12 +123,6 @@ def channelizer_output_rate(
             - channel_sample_rate_hz: Sample rate per channel
             - output_rate_gbps: Total output data rate
             - samples_per_channel_per_sec: Output samples per channel
-
-    Example:
-        ```python
-        result = channelizer_output_rate(1e9, 16)
-        print(f"Channel BW: {result['channel_bandwidth_hz']/1e6:.1f} MHz")
-        ```
     """
     channel_bandwidth_hz = input_bandwidth_hz / n_channels
     channel_sample_rate_hz = channel_bandwidth_hz * overlap_factor
@@ -177,12 +159,6 @@ def processing_margin(
             - margin_db: Margin in dB
             - utilization_percent: Percentage of capacity used
             - headroom_percent: Remaining capacity
-
-    Example:
-        ```python
-        result = processing_margin(1000, 600)
-        print(f"Utilization: {result['utilization_percent']:.1f}%")
-        ```
     """
     margin_ratio = available_throughput_gops / required_throughput_gops
     margin_db = 10 * math.log10(margin_ratio) if margin_ratio > 0 else float('-inf')
@@ -222,12 +198,6 @@ def beamformer_operations(
             - complex_adds_per_sec: Complex additions/sec
             - total_gops: Total Giga-operations/sec
             - method: 'time_domain' or 'frequency_domain'
-
-    Example:
-        ```python
-        result = beamformer_operations(256, 4, 100e6)
-        print(f"Required: {result['total_gops']:.1f} GOPS")
-        ```
     """
     if fft_size > 0:
         # Frequency-domain: FFT + multiply + IFFT
