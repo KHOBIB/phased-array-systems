@@ -33,8 +33,10 @@ def enob_to_snr(enob: float) -> float:
         SNR in dB
 
     Example:
+        ```python
         enob_to_snr(12)   # Returns 74.0
         enob_to_snr(14)   # Returns 86.04
+        ```
     """
     return 6.02 * enob + 1.76
 
@@ -73,8 +75,10 @@ def enob_to_sfdr(enob: float, margin_db: float = 0.0) -> float:
         Estimated SFDR in dB
 
     Example:
+        ```python
         enob_to_sfdr(12)                   # Returns 74.0
         enob_to_sfdr(12, margin_db=6)      # Returns 68.0 (conservative)
+        ```
     """
     return enob_to_snr(enob) - margin_db
 
@@ -193,8 +197,10 @@ def adc_dynamic_range(
             - dynamic_range_db: Usable dynamic range
 
     Example:
+        ```python
         result = adc_dynamic_range(14, noise_figure_db=3, bandwidth_hz=100e6)
         print(f"Dynamic range: {result['dynamic_range_db']:.1f} dB")
+        ```
     """
     snr_db = enob_to_snr(enob)
 
@@ -247,8 +253,10 @@ def dac_output_power(
             - noise_floor_dbm: Quantization noise floor
 
     Example:
+        ```python
         result = dac_output_power(14, full_scale_dbm=10, backoff_db=6)
         print(f"Operating power: {result['operating_power_dbm']:.1f} dBm")
+        ```
     """
     snr_db = enob_to_snr(enob)
     sfdr_db = enob_to_sfdr(enob)
