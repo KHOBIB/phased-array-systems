@@ -5,10 +5,10 @@ Analyze radar detection performance using the radar range equation,
 including SNR calculation, detection probability, and range curves.
 """
 
-import streamlit as st
 import numpy as np
 import pandas
 import plotly.graph_objects as go
+import streamlit as st
 from plotly.subplots import make_subplots
 
 st.set_page_config(
@@ -22,10 +22,11 @@ st.markdown("Analyze radar detection performance using the monostatic radar equa
 
 # Try to import the package
 try:
-    from phased_array_systems.architecture import Architecture, ArrayConfig, RFChainConfig
-    from phased_array_systems.scenarios import RadarDetectionScenario
-    from phased_array_systems.evaluate import evaluate_case
-    from phased_array_systems.models.radar.detection import albersheim_snr, compute_pd_from_snr
+    from phased_array_systems.models.radar.detection import (
+        albersheim_snr,
+        compute_pd_from_snr,
+    )
+
     PACKAGE_AVAILABLE = True
 except ImportError:
     PACKAGE_AVAILABLE = False
@@ -105,7 +106,7 @@ target_rcs_dbsm = st.sidebar.slider(
     max_value=30.0,
     value=0.0,
     step=1.0,
-    help="Radar Cross Section in dB relative to 1 m²"
+    help="Radar Cross Section in dB relative to 1 m²",
 )
 
 range_km = st.sidebar.slider(
@@ -124,7 +125,7 @@ pd_required = st.sidebar.slider(
     max_value=0.99,
     value=0.9,
     step=0.01,
-    help="Required probability of detection"
+    help="Required probability of detection",
 )
 
 pfa = st.sidebar.select_slider(
@@ -132,23 +133,19 @@ pfa = st.sidebar.select_slider(
     options=[1e-3, 1e-4, 1e-5, 1e-6, 1e-7, 1e-8, 1e-9],
     value=1e-6,
     format_func=lambda x: f"{x:.0e}",
-    help="Probability of false alarm"
+    help="Probability of false alarm",
 )
 
 st.sidebar.header("Integration")
 
 n_pulses = st.sidebar.slider(
-    "Number of Pulses",
-    min_value=1,
-    max_value=100,
-    value=10,
-    help="Pulses for integration"
+    "Number of Pulses", min_value=1, max_value=100, value=10, help="Pulses for integration"
 )
 
 integration_type = st.sidebar.radio(
     "Integration Type",
     ["Coherent", "Noncoherent"],
-    help="Coherent: 10*log10(N), Noncoherent: ~5*log10(N)"
+    help="Coherent: 10*log10(N), Noncoherent: ~5*log10(N)",
 )
 
 # Calculate radar parameters
@@ -217,10 +214,7 @@ snr_margin_db = snr_integrated_db - snr_required_db
 
 # Detection range (where margin = 0)
 # R_det / R = (SNR_integrated / SNR_required)^(1/4)
-if snr_margin_db > -40:
-    detection_range_m = range_m * 10 ** (snr_margin_db / 40)
-else:
-    detection_range_m = 0.0
+detection_range_m = range_m * 10 ** (snr_margin_db / 40) if snr_margin_db > -40 else 0.0
 
 # Main content
 st.header("Detection Analysis")
@@ -254,7 +248,7 @@ with col3:
 with col4:
     st.metric(
         "Max Detection Range",
-        f"{detection_range_m/1e3:.1f} km",
+        f"{detection_range_m / 1e3:.1f} km",
         f"for Pd={pd_required:.0%}",
     )
 
@@ -299,7 +293,8 @@ with tab1:
 
     # Create subplot
     fig = make_subplots(
-        rows=2, cols=1,
+        rows=2,
+        cols=1,
         subplot_titles=("Detection Probability vs Range", "SNR vs Range"),
         vertical_spacing=0.15,
     )
@@ -310,11 +305,12 @@ with tab1:
             x=ranges_km,
             y=pd_values * 100,
             mode="lines",
-            line=dict(width=3, color="blue"),
+            line={"width": 3, "color": "blue"},
             name="Pd",
             hovertemplate="Range: %{x:.1f} km<br>Pd: %{y:.1f}%<extra></extra>",
         ),
-        row=1, col=1
+        row=1,
+        col=1,
     )
 
     # Required Pd line
@@ -323,7 +319,8 @@ with tab1:
         line_dash="dash",
         line_color="red",
         annotation_text=f"Required Pd = {pd_required:.0%}",
-        row=1, col=1
+        row=1,
+        col=1,
     )
 
     # Current range marker
@@ -332,7 +329,8 @@ with tab1:
         line_dash="dot",
         line_color="green",
         annotation_text=f"Target Range = {range_km:.0f} km",
-        row=1, col=1
+        row=1,
+        col=1,
     )
 
     # SNR vs Range
@@ -341,11 +339,12 @@ with tab1:
             x=ranges_km,
             y=snr_values,
             mode="lines",
-            line=dict(width=3, color="orange"),
+            line={"width": 3, "color": "orange"},
             name="SNR (integrated)",
             hovertemplate="Range: %{x:.1f} km<br>SNR: %{y:.1f} dB<extra></extra>",
         ),
-        row=2, col=1
+        row=2,
+        col=1,
     )
 
     # Required SNR line
@@ -354,7 +353,8 @@ with tab1:
         line_dash="dash",
         line_color="red",
         annotation_text=f"Required SNR = {snr_required_db:.1f} dB",
-        row=2, col=1
+        row=2,
+        col=1,
     )
 
     fig.update_layout(height=600, showlegend=True)
@@ -372,9 +372,9 @@ with tab2:
         ("Peak Transmit Power", f"{peak_power_dbw:.1f} dBW", "Pt"),
         ("Transmit Antenna Gain", f"+{g_peak_db:.1f} dB", "Gt"),
         ("Receive Antenna Gain", f"+{g_peak_db:.1f} dB", "Gr (same antenna)"),
-        ("Wavelength Factor", f"+{2*wavelength_db:.1f} dB", "2×λ²"),
+        ("Wavelength Factor", f"+{2 * wavelength_db:.1f} dB", "2×λ²"),
         ("Target RCS", f"+{target_rcs_dbsm:.1f} dBsm", "σ"),
-        ("Range Factor", f"-{4*range_db:.1f} dB", "R⁴"),
+        ("Range Factor", f"-{4 * range_db:.1f} dB", "R⁴"),
         ("System Losses", f"-{system_loss_db:.1f} dB", "L"),
         ("Radar Constant", f"-{radar_constant_db:.1f} dB", "(4π)³"),
         ("Noise Power", f"-{noise_power_dbw:.1f} dBW", "kTB + NF"),
@@ -390,13 +390,19 @@ with tab2:
     with col2:
         st.markdown("**SNR Summary**")
         st.write(f"- Single-Pulse SNR: **{snr_single_db:.1f} dB**")
-        st.write(f"- Integration Gain ({n_pulses} pulses, {integration_type.lower()}): **+{integration_gain_db:.1f} dB**")
+        st.write(
+            f"- Integration Gain ({n_pulses} pulses, {integration_type.lower()}): **+{integration_gain_db:.1f} dB**"
+        )
         st.write(f"- Integrated SNR: **{snr_integrated_db:.1f} dB**")
-        st.write(f"- Required SNR (Pd={pd_required:.0%}, Pfa={pfa:.0e}): **{snr_required_db:.1f} dB**")
+        st.write(
+            f"- Required SNR (Pd={pd_required:.0%}, Pfa={pfa:.0e}): **{snr_required_db:.1f} dB**"
+        )
         st.divider()
         margin_color = "green" if snr_margin_db >= 0 else "red"
-        st.markdown(f"**SNR Margin: <span style='color:{margin_color}'>{snr_margin_db:.1f} dB</span>**",
-                    unsafe_allow_html=True)
+        st.markdown(
+            f"**SNR Margin: <span style='color:{margin_color}'>{snr_margin_db:.1f} dB</span>**",
+            unsafe_allow_html=True,
+        )
 
 with tab3:
     st.subheader("Complete Results")
@@ -406,17 +412,19 @@ with tab3:
     with col1:
         st.markdown("**System Parameters**")
         st.write(f"- Array Size: {nx} × {ny} = {n_elements} elements")
-        st.write(f"- Frequency: {freq_ghz:.1f} GHz (λ = {wavelength_m*1000:.1f} mm)")
+        st.write(f"- Frequency: {freq_ghz:.1f} GHz (λ = {wavelength_m * 1000:.1f} mm)")
         st.write(f"- Bandwidth: {bandwidth_mhz:.1f} MHz")
         st.write(f"- Peak Power: {peak_power_w:.1f} W ({peak_power_dbw:.1f} dBW)")
         st.write(f"- Antenna Gain: {g_peak_db:.1f} dB")
 
     with col2:
         st.markdown("**Detection Performance**")
-        st.write(f"- Target RCS: {target_rcs_dbsm:.1f} dBsm ({10**(target_rcs_dbsm/10):.2f} m²)")
+        st.write(
+            f"- Target RCS: {target_rcs_dbsm:.1f} dBsm ({10 ** (target_rcs_dbsm / 10):.2f} m²)"
+        )
         st.write(f"- Target Range: {range_km:.1f} km")
         st.write(f"- Achieved Pd: {pd_achieved:.1%}")
-        st.write(f"- Detection Range: {detection_range_m/1e3:.1f} km")
+        st.write(f"- Detection Range: {detection_range_m / 1e3:.1f} km")
 
     st.divider()
     st.markdown("**Integration**")
@@ -428,10 +436,24 @@ with tab3:
     st.divider()
     st.markdown("**SNR Breakdown**")
 
-    snr_breakdown = pandas.DataFrame({
-        "Metric": ["Single-Pulse SNR", "Integration Gain", "Integrated SNR", "Required SNR", "SNR Margin"],
-        "Value (dB)": [snr_single_db, integration_gain_db, snr_integrated_db, snr_required_db, snr_margin_db],
-    })
+    snr_breakdown = pandas.DataFrame(
+        {
+            "Metric": [
+                "Single-Pulse SNR",
+                "Integration Gain",
+                "Integrated SNR",
+                "Required SNR",
+                "SNR Margin",
+            ],
+            "Value (dB)": [
+                snr_single_db,
+                integration_gain_db,
+                snr_integrated_db,
+                snr_required_db,
+                snr_margin_db,
+            ],
+        }
+    )
     snr_breakdown["Value (dB)"] = snr_breakdown["Value (dB)"].round(1)
 
     st.dataframe(snr_breakdown, use_container_width=True, hide_index=True)
@@ -454,23 +476,24 @@ for rcs_dbsm in rcs_values_dbsm:
 
     # More directly: R_det^4 proportional to SNR_linear
     base_snr_margin = snr_margin_db + (rcs_dbsm - target_rcs_dbsm)
-    if base_snr_margin > -40:
-        r_det = range_m * 10 ** (base_snr_margin / 40)
-    else:
-        r_det = 0
+    r_det = range_m * 10 ** (base_snr_margin / 40) if base_snr_margin > -40 else 0
     detection_ranges.append(r_det / 1e3)
 
 fig = go.Figure()
 
-fig.add_trace(go.Bar(
-    x=[f"{rcs:.0f}" for rcs in rcs_values_dbsm],
-    y=detection_ranges,
-    marker_color=["green" if r > range_km else "orange" if r > range_km*0.5 else "red"
-                  for r in detection_ranges],
-    text=[f"{r:.0f}" for r in detection_ranges],
-    textposition="outside",
-    hovertemplate="RCS: %{x} dBsm<br>Detection Range: %{y:.1f} km<extra></extra>",
-))
+fig.add_trace(
+    go.Bar(
+        x=[f"{rcs:.0f}" for rcs in rcs_values_dbsm],
+        y=detection_ranges,
+        marker_color=[
+            "green" if r > range_km else "orange" if r > range_km * 0.5 else "red"
+            for r in detection_ranges
+        ],
+        text=[f"{r:.0f}" for r in detection_ranges],
+        textposition="outside",
+        hovertemplate="RCS: %{x} dBsm<br>Detection Range: %{y:.1f} km<extra></extra>",
+    )
+)
 
 # Reference line for current target range
 fig.add_hline(

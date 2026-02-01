@@ -5,8 +5,8 @@ Interactive evaluation of a single phased array configuration
 with real-time metrics display and requirement verification.
 """
 
-import streamlit as st
 import numpy as np
+import streamlit as st
 
 st.set_page_config(
     page_title="Single Case Calculator",
@@ -19,10 +19,16 @@ st.markdown("Evaluate a single phased array configuration with real-time metrics
 
 # Try to import the package
 try:
-    from phased_array_systems.architecture import Architecture, ArrayConfig, RFChainConfig, CostConfig
-    from phased_array_systems.scenarios import CommsLinkScenario
+    from phased_array_systems.architecture import (
+        Architecture,
+        ArrayConfig,
+        CostConfig,
+        RFChainConfig,
+    )
     from phased_array_systems.evaluate import evaluate_case
-    from phased_array_systems.requirements import RequirementSet, Requirement
+    from phased_array_systems.requirements import Requirement, RequirementSet
+    from phased_array_systems.scenarios import CommsLinkScenario
+
     PACKAGE_AVAILABLE = True
 except ImportError:
     PACKAGE_AVAILABLE = False
@@ -42,14 +48,14 @@ nx = st.sidebar.select_slider(
     "Elements X (nx)",
     options=[2, 4, 8, 16, 32, 64],
     value=8,
-    help="Number of elements in X direction (power of 2)"
+    help="Number of elements in X direction (power of 2)",
 )
 
 ny = st.sidebar.select_slider(
     "Elements Y (ny)",
     options=[2, 4, 8, 16, 32, 64],
     value=8,
-    help="Number of elements in Y direction (power of 2)"
+    help="Number of elements in Y direction (power of 2)",
 )
 
 dx_lambda = st.sidebar.slider(
@@ -58,7 +64,7 @@ dx_lambda = st.sidebar.slider(
     max_value=0.7,
     value=0.5,
     step=0.05,
-    help="Element spacing in wavelengths"
+    help="Element spacing in wavelengths",
 )
 
 dy_lambda = st.sidebar.slider(
@@ -67,7 +73,7 @@ dy_lambda = st.sidebar.slider(
     max_value=0.7,
     value=0.5,
     step=0.05,
-    help="Element spacing in wavelengths"
+    help="Element spacing in wavelengths",
 )
 
 st.sidebar.header("RF Chain")
@@ -78,7 +84,7 @@ tx_power_w = st.sidebar.slider(
     max_value=5.0,
     value=1.0,
     step=0.1,
-    help="Transmit power per element in Watts"
+    help="Transmit power per element in Watts",
 )
 
 pa_efficiency = st.sidebar.slider(
@@ -87,7 +93,7 @@ pa_efficiency = st.sidebar.slider(
     max_value=0.7,
     value=0.3,
     step=0.05,
-    help="Power amplifier efficiency (0-1)"
+    help="Power amplifier efficiency (0-1)",
 )
 
 noise_figure_db = st.sidebar.slider(
@@ -96,7 +102,7 @@ noise_figure_db = st.sidebar.slider(
     max_value=10.0,
     value=3.0,
     step=0.5,
-    help="Receiver noise figure"
+    help="Receiver noise figure",
 )
 
 st.sidebar.header("Cost")
@@ -107,7 +113,7 @@ cost_per_elem = st.sidebar.number_input(
     max_value=1000,
     value=100,
     step=10,
-    help="Recurring cost per element in USD"
+    help="Recurring cost per element in USD",
 )
 
 st.sidebar.header("Scenario")
@@ -118,25 +124,15 @@ freq_ghz = st.sidebar.slider(
     max_value=40.0,
     value=10.0,
     step=0.5,
-    help="Operating frequency"
+    help="Operating frequency",
 )
 
 range_km = st.sidebar.slider(
-    "Range (km)",
-    min_value=1.0,
-    max_value=500.0,
-    value=100.0,
-    step=5.0,
-    help="Link distance"
+    "Range (km)", min_value=1.0, max_value=500.0, value=100.0, step=5.0, help="Link distance"
 )
 
 bandwidth_mhz = st.sidebar.slider(
-    "Bandwidth (MHz)",
-    min_value=1.0,
-    max_value=100.0,
-    value=10.0,
-    step=1.0,
-    help="Signal bandwidth"
+    "Bandwidth (MHz)", min_value=1.0, max_value=100.0, value=10.0, step=1.0, help="Signal bandwidth"
 )
 
 required_snr_db = st.sidebar.slider(
@@ -145,7 +141,7 @@ required_snr_db = st.sidebar.slider(
     max_value=30.0,
     value=10.0,
     step=1.0,
-    help="SNR required for demodulation"
+    help="SNR required for demodulation",
 )
 
 # Calculate derived values
@@ -159,7 +155,8 @@ if PACKAGE_AVAILABLE:
     # Use the actual package
     arch = Architecture(
         array=ArrayConfig(
-            nx=nx, ny=ny,
+            nx=nx,
+            ny=ny,
             dx_lambda=dx_lambda,
             dy_lambda=dy_lambda,
             enforce_subarray_constraint=False,
@@ -181,22 +178,26 @@ if PACKAGE_AVAILABLE:
 
     # Define requirements
     requirements = RequirementSet()
-    requirements.add(Requirement(
-        id="REQ-SNR",
-        name="SNR Margin",
-        metric_key="link_margin_db",
-        op=">=",
-        value=0.0,
-        severity="must",
-    ))
-    requirements.add(Requirement(
-        id="REQ-COST",
-        name="System Cost",
-        metric_key="cost_usd",
-        op="<=",
-        value=100000.0,
-        severity="should",
-    ))
+    requirements.add(
+        Requirement(
+            id="REQ-SNR",
+            name="SNR Margin",
+            metric_key="link_margin_db",
+            op=">=",
+            value=0.0,
+            severity="must",
+        )
+    )
+    requirements.add(
+        Requirement(
+            id="REQ-COST",
+            name="System Cost",
+            metric_key="cost_usd",
+            op="<=",
+            value=100000.0,
+            severity="should",
+        )
+    )
 
     # Evaluate
     metrics = evaluate_case(arch, scenario, requirements)
@@ -263,34 +264,24 @@ st.header("Results")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        "Total Elements",
-        f"{n_elements:,}",
-        help="nx × ny"
-    )
+    st.metric("Total Elements", f"{n_elements:,}", help="nx × ny")
 
 with col2:
-    st.metric(
-        "Peak Gain",
-        f"{metrics.get('g_peak_db', 0):.1f} dB",
-        help="Antenna peak gain"
-    )
+    st.metric("Peak Gain", f"{metrics.get('g_peak_db', 0):.1f} dB", help="Antenna peak gain")
 
 with col3:
     st.metric(
-        "EIRP",
-        f"{metrics.get('eirp_dbw', 0):.1f} dBW",
-        help="Effective Isotropic Radiated Power"
+        "EIRP", f"{metrics.get('eirp_dbw', 0):.1f} dBW", help="Effective Isotropic Radiated Power"
     )
 
-link_margin = metrics.get('link_margin_db', 0)
+link_margin = metrics.get("link_margin_db", 0)
 with col4:
     st.metric(
         "Link Margin",
         f"{link_margin:.1f} dB",
         delta="PASS" if link_margin >= 0 else "FAIL",
         delta_color="normal" if link_margin >= 0 else "inverse",
-        help="SNR margin above required"
+        help="SNR margin above required",
     )
 
 st.divider()
@@ -308,7 +299,7 @@ with tab1:
         st.write(f"- Array Size: {nx} × {ny} = {n_elements} elements")
         st.write(f"- Element Spacing: {dx_lambda}λ × {dy_lambda}λ")
         st.write(f"- Frequency: {freq_ghz:.1f} GHz")
-        st.write(f"- Wavelength: {3e8/freq_hz*1000:.1f} mm")
+        st.write(f"- Wavelength: {3e8 / freq_hz * 1000:.1f} mm")
 
     with col2:
         st.markdown("**Performance**")
@@ -325,7 +316,9 @@ with tab2:
     with col1:
         st.markdown("**Transmit**")
         st.write(f"- TX Power/Element: {tx_power_w:.1f} W")
-        st.write(f"- Total TX Power: {tx_power_w * n_elements:.1f} W ({10*np.log10(tx_power_w * n_elements):.1f} dBW)")
+        st.write(
+            f"- Total TX Power: {tx_power_w * n_elements:.1f} W ({10 * np.log10(tx_power_w * n_elements):.1f} dBW)"
+        )
         st.write(f"- Antenna Gain: {metrics.get('g_peak_db', 0):.1f} dB")
         st.write(f"- **EIRP: {metrics.get('eirp_dbw', 0):.1f} dBW**")
 
@@ -341,14 +334,14 @@ with tab2:
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        snr = metrics.get('snr_rx_db', 0)
+        snr = metrics.get("snr_rx_db", 0)
         st.metric("Received SNR", f"{snr:.1f} dB")
 
     with col2:
         st.metric("Required SNR", f"{required_snr_db:.1f} dB")
 
     with col3:
-        margin = metrics.get('link_margin_db', 0)
+        margin = metrics.get("link_margin_db", 0)
         color = "green" if margin >= 0 else "red"
         status = "✅ PASS" if margin >= 0 else "❌ FAIL"
         st.metric("Link Margin", f"{margin:.1f} dB", status)
@@ -360,14 +353,14 @@ with tab3:
 
     with col1:
         st.markdown("**Power**")
-        prime_power = metrics.get('prime_power_w', tx_power_w * n_elements / pa_efficiency)
+        prime_power = metrics.get("prime_power_w", tx_power_w * n_elements / pa_efficiency)
         st.write(f"- RF Power: {tx_power_w * n_elements:.1f} W")
-        st.write(f"- PA Efficiency: {pa_efficiency*100:.0f}%")
+        st.write(f"- PA Efficiency: {pa_efficiency * 100:.0f}%")
         st.write(f"- **Prime Power: {prime_power:.1f} W**")
 
     with col2:
         st.markdown("**Cost**")
-        total_cost = metrics.get('cost_usd', cost_per_elem * n_elements)
+        total_cost = metrics.get("cost_usd", cost_per_elem * n_elements)
         st.write(f"- Cost per Element: ${cost_per_elem:,}")
         st.write(f"- Number of Elements: {n_elements:,}")
         st.write(f"- **Total Cost: ${total_cost:,.0f}**")
@@ -376,7 +369,9 @@ with tab3:
     st.divider()
     cost_limit = 100000
     cost_pct = min(total_cost / cost_limit * 100, 100)
-    st.progress(cost_pct / 100, f"Cost Budget: ${total_cost:,.0f} / ${cost_limit:,} ({cost_pct:.0f}%)")
+    st.progress(
+        cost_pct / 100, f"Cost Budget: ${total_cost:,.0f} / ${cost_limit:,} ({cost_pct:.0f}%)"
+    )
 
 # Export configuration
 st.divider()
@@ -408,5 +403,5 @@ scenario:
         label="Download Configuration",
         data=yaml_config,
         file_name="phased_array_config.yaml",
-        mime="text/yaml"
+        mime="text/yaml",
     )

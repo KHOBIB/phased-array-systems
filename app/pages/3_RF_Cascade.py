@@ -5,10 +5,10 @@ Interactive analysis of cascaded RF chain performance including
 noise figure, gain, linearity, and dynamic range.
 """
 
-import streamlit as st
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import streamlit as st
 from plotly.subplots import make_subplots
 
 st.set_page_config(
@@ -25,10 +25,8 @@ try:
     from phased_array_systems.models.rf.cascade import (
         RFStage,
         cascade_analysis,
-        friis_noise_figure,
-        cascade_iip3,
-        mds_from_noise_figure,
     )
+
     PACKAGE_AVAILABLE = True
 except ImportError:
     PACKAGE_AVAILABLE = False
@@ -110,7 +108,7 @@ n_stages = st.sidebar.number_input(
     min_value=1,
     max_value=10,
     value=4,
-    help="Number of RF stages in the cascade"
+    help="Number of RF stages in the cascade",
 )
 
 st.sidebar.divider()
@@ -118,56 +116,56 @@ st.sidebar.divider()
 # Configure each stage
 stages = []
 for i in range(n_stages):
-    st.sidebar.subheader(f"Stage {i+1}")
+    st.sidebar.subheader(f"Stage {i + 1}")
 
     template = st.sidebar.selectbox(
-        f"Type",
+        "Type",
         list(STAGE_TEMPLATES.keys()),
         key=f"template_{i}",
-        index=0 if i == 0 else (1 if i == 1 else (2 if i == 2 else 3))
+        index=0 if i == 0 else (1 if i == 1 else (2 if i == 2 else 3)),
     )
 
     defaults = STAGE_TEMPLATES[template]
 
     name = st.sidebar.text_input(
-        f"Name",
-        value=f"{template}" if template != "Custom" else f"Stage {i+1}",
-        key=f"name_{i}"
+        "Name", value=f"{template}" if template != "Custom" else f"Stage {i + 1}", key=f"name_{i}"
     )
 
     gain = st.sidebar.slider(
-        f"Gain (dB)",
+        "Gain (dB)",
         min_value=-10.0,
         max_value=40.0,
         value=defaults["gain_db"],
         step=0.5,
-        key=f"gain_{i}"
+        key=f"gain_{i}",
     )
 
     nf = st.sidebar.slider(
-        f"Noise Figure (dB)",
+        "Noise Figure (dB)",
         min_value=0.5,
         max_value=15.0,
         value=defaults["nf_db"],
         step=0.5,
-        key=f"nf_{i}"
+        key=f"nf_{i}",
     )
 
     iip3 = st.sidebar.slider(
-        f"IIP3 (dBm)",
+        "IIP3 (dBm)",
         min_value=-20.0,
         max_value=50.0,
         value=defaults["iip3_dbm"],
         step=1.0,
-        key=f"iip3_{i}"
+        key=f"iip3_{i}",
     )
 
-    stages.append({
-        "name": name,
-        "gain_db": gain,
-        "nf_db": nf,
-        "iip3_dbm": iip3,
-    })
+    stages.append(
+        {
+            "name": name,
+            "gain_db": gain,
+            "nf_db": nf,
+            "iip3_dbm": iip3,
+        }
+    )
 
     st.sidebar.divider()
 
@@ -180,7 +178,7 @@ bandwidth_mhz = st.sidebar.slider(
     max_value=100.0,
     value=10.0,
     step=0.1,
-    help="Analysis bandwidth"
+    help="Analysis bandwidth",
 )
 
 input_power_dbm = st.sidebar.slider(
@@ -189,7 +187,7 @@ input_power_dbm = st.sidebar.slider(
     max_value=-20.0,
     value=-60.0,
     step=1.0,
-    help="Reference input signal level"
+    help="Reference input signal level",
 )
 
 bandwidth_hz = bandwidth_mhz * 1e6
@@ -221,7 +219,7 @@ else:
     mds_dbm = noise_floor_dbm
 
     # SFDR
-    sfdr_db = (2/3) * (iip3_result["iip3_dbm"] - noise_floor_dbm)
+    sfdr_db = (2 / 3) * (iip3_result["iip3_dbm"] - noise_floor_dbm)
 
     # Signal tracking
     levels = [input_power_dbm]
@@ -253,32 +251,16 @@ st.header("Cascade Results")
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.metric(
-        "Total Gain",
-        f"{results['total_gain_db']:.1f} dB",
-        help="Sum of all stage gains"
-    )
+    st.metric("Total Gain", f"{results['total_gain_db']:.1f} dB", help="Sum of all stage gains")
 
 with col2:
-    st.metric(
-        "System NF",
-        f"{results['total_nf_db']:.2f} dB",
-        help="Cascaded noise figure (Friis)"
-    )
+    st.metric("System NF", f"{results['total_nf_db']:.2f} dB", help="Cascaded noise figure (Friis)")
 
 with col3:
-    st.metric(
-        "System IIP3",
-        f"{results['iip3_dbm']:.1f} dBm",
-        help="Cascaded input IP3"
-    )
+    st.metric("System IIP3", f"{results['iip3_dbm']:.1f} dBm", help="Cascaded input IP3")
 
 with col4:
-    st.metric(
-        "SFDR",
-        f"{results['sfdr_db']:.1f} dB",
-        help="Spurious-Free Dynamic Range"
-    )
+    st.metric("SFDR", f"{results['sfdr_db']:.1f} dB", help="Spurious-Free Dynamic Range")
 
 st.divider()
 
@@ -290,7 +272,8 @@ with tab1:
 
     # Create waterfall chart
     fig = make_subplots(
-        rows=2, cols=1,
+        rows=2,
+        cols=1,
         subplot_titles=("Signal Level (dBm)", "Cumulative Gain (dB)"),
         vertical_spacing=0.15,
     )
@@ -304,12 +287,13 @@ with tab1:
             x=stage_names,
             y=levels,
             mode="lines+markers",
-            marker=dict(size=12, color="blue"),
-            line=dict(width=3, color="blue"),
+            marker={"size": 12, "color": "blue"},
+            line={"width": 3, "color": "blue"},
             name="Signal Level",
             hovertemplate="%{x}<br>Level: %{y:.1f} dBm<extra></extra>",
         ),
-        row=1, col=1
+        row=1,
+        col=1,
     )
 
     # Add noise floor reference
@@ -319,7 +303,8 @@ with tab1:
         line_dash="dash",
         line_color="red",
         annotation_text=f"Noise Floor: {noise_floor:.1f} dBm",
-        row=1, col=1
+        row=1,
+        col=1,
     )
 
     # Cumulative gain
@@ -333,18 +318,19 @@ with tab1:
         go.Bar(
             x=stage_names,
             y=cumulative_gains,
-            marker_color=["gray"] + ["green" if stages[i]["gain_db"] > 0 else "red"
-                                      for i in range(len(stages))],
+            marker_color=["gray"]
+            + ["green" if stages[i]["gain_db"] > 0 else "red" for i in range(len(stages))],
             name="Cumulative Gain",
             hovertemplate="%{x}<br>Cum. Gain: %{y:.1f} dB<extra></extra>",
         ),
-        row=2, col=1
+        row=2,
+        col=1,
     )
 
     fig.update_layout(
         height=600,
         showlegend=True,
-        legend=dict(yanchor="top", y=0.99, xanchor="right", x=0.99),
+        legend={"yanchor": "top", "y": 0.99, "xanchor": "right", "x": 0.99},
     )
 
     fig.update_yaxes(title_text="Level (dBm)", row=1, col=1)
@@ -361,14 +347,18 @@ with tab2:
         # Bar chart of NF contributions
         fig = go.Figure()
 
-        fig.add_trace(go.Bar(
-            x=[stages[i]["name"] for i in range(len(contributions))],
-            y=contributions,
-            marker_color=["#FF6B6B" if i == 0 else "#4ECDC4" for i in range(len(contributions))],
-            text=[f"{c:.2f} dB" for c in contributions],
-            textposition="outside",
-            hovertemplate="%{x}<br>NF Contribution: %{y:.3f} dB<extra></extra>",
-        ))
+        fig.add_trace(
+            go.Bar(
+                x=[stages[i]["name"] for i in range(len(contributions))],
+                y=contributions,
+                marker_color=[
+                    "#FF6B6B" if i == 0 else "#4ECDC4" for i in range(len(contributions))
+                ],
+                text=[f"{c:.2f} dB" for c in contributions],
+                textposition="outside",
+                hovertemplate="%{x}<br>NF Contribution: %{y:.3f} dB<extra></extra>",
+            )
+        )
 
         fig.update_layout(
             xaxis_title="Stage",
@@ -396,7 +386,9 @@ with tab3:
         st.write(f"- Total Gain: {results['total_gain_db']:.2f} dB")
         st.write(f"- System Noise Figure: {results['total_nf_db']:.3f} dB")
         st.write(f"- Noise Temperature: {results['noise_temp_k']:.1f} K")
-        st.write(f"- Noise Floor: {results['noise_floor_dbm']:.1f} dBm ({bandwidth_mhz:.1f} MHz BW)")
+        st.write(
+            f"- Noise Floor: {results['noise_floor_dbm']:.1f} dBm ({bandwidth_mhz:.1f} MHz BW)"
+        )
 
     with col2:
         st.markdown("**Linearity & Dynamic Range**")
@@ -440,34 +432,42 @@ with col1:
     # Dynamic range bar
     max_signal = noise_floor + sfdr
 
-    fig.add_trace(go.Bar(
-        y=["Dynamic Range"],
-        x=[sfdr],
-        orientation="h",
-        base=[noise_floor],
-        marker_color="lightgreen",
-        name="SFDR",
-        text=[f"SFDR: {sfdr:.1f} dB"],
-        textposition="inside",
-    ))
+    fig.add_trace(
+        go.Bar(
+            y=["Dynamic Range"],
+            x=[sfdr],
+            orientation="h",
+            base=[noise_floor],
+            marker_color="lightgreen",
+            name="SFDR",
+            text=[f"SFDR: {sfdr:.1f} dB"],
+            textposition="inside",
+        )
+    )
 
     # Markers
-    fig.add_vline(x=noise_floor, line_dash="dash", line_color="blue",
-                  annotation_text=f"Noise Floor\n{noise_floor:.1f} dBm")
-    fig.add_vline(x=iip3, line_dash="dash", line_color="red",
-                  annotation_text=f"IIP3\n{iip3:.1f} dBm")
+    fig.add_vline(
+        x=noise_floor,
+        line_dash="dash",
+        line_color="blue",
+        annotation_text=f"Noise Floor\n{noise_floor:.1f} dBm",
+    )
+    fig.add_vline(
+        x=iip3, line_dash="dash", line_color="red", annotation_text=f"IIP3\n{iip3:.1f} dBm"
+    )
 
     fig.update_layout(
         xaxis_title="Power Level (dBm)",
         height=200,
         showlegend=False,
-        margin=dict(l=20, r=20, t=40, b=40),
+        margin={"l": 20, "r": 20, "t": 40, "b": 40},
     )
 
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.markdown("""
+    st.markdown(
+        """
     **Dynamic Range Metrics**
 
     | Metric | Value | Description |
@@ -479,8 +479,9 @@ with col2:
 
     *SFDR = (2/3) × (IIP3 - Noise Floor)*
     """.format(
-        results["noise_floor_dbm"],
-        results["sfdr_db"],
-        results["iip3_dbm"],
-        results["oip3_dbm"],
-    ))
+            results["noise_floor_dbm"],
+            results["sfdr_db"],
+            results["iip3_dbm"],
+            results["oip3_dbm"],
+        )
+    )

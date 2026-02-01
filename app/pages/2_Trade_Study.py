@@ -5,11 +5,11 @@ Generate Design of Experiments, run batch evaluations,
 and visualize Pareto-optimal designs.
 """
 
-import streamlit as st
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+import streamlit as st
 
 st.set_page_config(
     page_title="Trade Study",
@@ -22,18 +22,25 @@ st.markdown("Design of Experiments with Pareto optimization for phased array sys
 
 # Try to import the package
 try:
-    from phased_array_systems.architecture import Architecture, ArrayConfig, RFChainConfig, CostConfig
-    from phased_array_systems.scenarios import CommsLinkScenario
+    from phased_array_systems.architecture import (
+        Architecture,
+        ArrayConfig,
+        CostConfig,
+        RFChainConfig,
+    )
     from phased_array_systems.evaluate import evaluate_case
-    from phased_array_systems.trades import DesignSpace, generate_doe, extract_pareto
+    from phased_array_systems.scenarios import CommsLinkScenario
+    from phased_array_systems.trades import DesignSpace, extract_pareto
+
     PACKAGE_AVAILABLE = True
 except ImportError:
     PACKAGE_AVAILABLE = False
     st.info("Running in demo mode. Install `phased-array-systems` for full functionality.")
 
 
-def generate_demo_results(n_samples: int, nx_range: tuple, ny_range: tuple,
-                          power_range: tuple, seed: int = 42) -> pd.DataFrame:
+def generate_demo_results(
+    n_samples: int, nx_range: tuple, ny_range: tuple, power_range: tuple, seed: int = 42
+) -> pd.DataFrame:
     """Generate demo results for visualization when package not available."""
     rng = np.random.default_rng(seed)
 
@@ -56,20 +63,22 @@ def generate_demo_results(n_samples: int, nx_range: tuple, ny_range: tuple,
 
         # Add some noise
         eirp_dbw += rng.normal(0, 0.5)
-        cost_usd *= (1 + rng.normal(0, 0.05))
+        cost_usd *= 1 + rng.normal(0, 0.05)
 
-        results.append({
-            "case_id": f"case_{i:05d}",
-            "array.nx": nx,
-            "array.ny": ny,
-            "rf.tx_power_w_per_elem": tx_power,
-            "n_elements": n_elem,
-            "g_peak_db": g_peak_db,
-            "eirp_dbw": eirp_dbw,
-            "cost_usd": cost_usd,
-            "prime_power_w": prime_power_w,
-            "link_margin_db": eirp_dbw - 60 + rng.normal(0, 2),  # Rough margin
-        })
+        results.append(
+            {
+                "case_id": f"case_{i:05d}",
+                "array.nx": nx,
+                "array.ny": ny,
+                "rf.tx_power_w_per_elem": tx_power,
+                "n_elements": n_elem,
+                "g_peak_db": g_peak_db,
+                "eirp_dbw": eirp_dbw,
+                "cost_usd": cost_usd,
+                "prime_power_w": prime_power_w,
+                "link_margin_db": eirp_dbw - 60 + rng.normal(0, 2),  # Rough margin
+            }
+        )
 
     return pd.DataFrame(results)
 
@@ -95,13 +104,9 @@ st.sidebar.header("DOE Settings")
 doe_method = st.sidebar.selectbox(
     "Sampling Method",
     ["Latin Hypercube (LHS)", "Random", "Grid"],
-    help="LHS provides better space-filling properties"
+    help="LHS provides better space-filling properties",
 )
-method_map = {
-    "Latin Hypercube (LHS)": "lhs",
-    "Random": "random",
-    "Grid": "grid"
-}
+method_map = {"Latin Hypercube (LHS)": "lhs", "Random": "random", "Grid": "grid"}
 
 n_samples = st.sidebar.slider(
     "Number of Samples",
@@ -109,15 +114,11 @@ n_samples = st.sidebar.slider(
     max_value=500,
     value=50,
     step=10,
-    help="Number of design points to evaluate"
+    help="Number of design points to evaluate",
 )
 
 seed = st.sidebar.number_input(
-    "Random Seed",
-    min_value=0,
-    max_value=9999,
-    value=42,
-    help="For reproducibility"
+    "Random Seed", min_value=0, max_value=9999, value=42, help="For reproducibility"
 )
 
 st.sidebar.divider()
@@ -208,11 +209,7 @@ if run_study:
         else:
             # Demo mode
             st.session_state.trade_results = generate_demo_results(
-                n_samples,
-                (nx_min, nx_max),
-                (ny_min, ny_max),
-                (power_min, power_max),
-                seed
+                n_samples, (nx_min, nx_max), (ny_min, ny_max), (power_min, power_max), seed
             )
 
     st.success(f"Completed {len(st.session_state.trade_results)} design evaluations!")
@@ -226,23 +223,30 @@ if st.session_state.trade_results is not None:
 
     # Extract Pareto frontier
     if PACKAGE_AVAILABLE:
-        pareto_df = extract_pareto(results_df, [
-            ("cost_usd", "minimize"),
-            ("eirp_dbw", "maximize"),
-        ])
+        pareto_df = extract_pareto(
+            results_df,
+            [
+                ("cost_usd", "minimize"),
+                ("eirp_dbw", "maximize"),
+            ],
+        )
     else:
         # Simple Pareto extraction for demo
         is_pareto = np.ones(len(results_df), dtype=bool)
         for i in range(len(results_df)):
             for j in range(len(results_df)):
-                if i != j:
-                    # j dominates i if j has lower cost AND higher EIRP
-                    if (results_df.iloc[j]["cost_usd"] <= results_df.iloc[i]["cost_usd"] and
-                        results_df.iloc[j]["eirp_dbw"] >= results_df.iloc[i]["eirp_dbw"] and
-                        (results_df.iloc[j]["cost_usd"] < results_df.iloc[i]["cost_usd"] or
-                         results_df.iloc[j]["eirp_dbw"] > results_df.iloc[i]["eirp_dbw"])):
-                        is_pareto[i] = False
-                        break
+                # j dominates i if j has lower cost AND higher EIRP
+                if (
+                    i != j
+                    and results_df.iloc[j]["cost_usd"] <= results_df.iloc[i]["cost_usd"]
+                    and results_df.iloc[j]["eirp_dbw"] >= results_df.iloc[i]["eirp_dbw"]
+                    and (
+                        results_df.iloc[j]["cost_usd"] < results_df.iloc[i]["cost_usd"]
+                        or results_df.iloc[j]["eirp_dbw"] > results_df.iloc[i]["eirp_dbw"]
+                    )
+                ):
+                    is_pareto[i] = False
+                    break
         pareto_df = results_df[is_pareto]
 
     # Summary metrics
@@ -255,7 +259,11 @@ if st.session_state.trade_results is not None:
         st.metric("Pareto Optimal", len(pareto_df))
 
     with col3:
-        feasible = len(results_df[results_df.get("link_margin_db", 0) >= 0]) if "link_margin_db" in results_df else len(results_df)
+        feasible = (
+            len(results_df[results_df.get("link_margin_db", 0) >= 0])
+            if "link_margin_db" in results_df
+            else len(results_df)
+        )
         st.metric("Feasible Designs", feasible)
 
     with col4:
@@ -272,38 +280,44 @@ if st.session_state.trade_results is not None:
         fig = go.Figure()
 
         # All points
-        fig.add_trace(go.Scatter(
-            x=results_df["cost_usd"],
-            y=results_df["eirp_dbw"],
-            mode="markers",
-            marker=dict(
-                size=8,
-                color=results_df["n_elements"],
-                colorscale="Viridis",
-                colorbar=dict(title="Elements"),
-                opacity=0.6,
-            ),
-            text=[f"nx={r['array.nx']}, ny={r['array.ny']}<br>Power={r['rf.tx_power_w_per_elem']:.1f}W"
-                  for _, r in results_df.iterrows()],
-            hovertemplate="<b>Cost:</b> $%{x:,.0f}<br><b>EIRP:</b> %{y:.1f} dBW<br>%{text}<extra></extra>",
-            name="All Designs"
-        ))
+        fig.add_trace(
+            go.Scatter(
+                x=results_df["cost_usd"],
+                y=results_df["eirp_dbw"],
+                mode="markers",
+                marker={
+                    "size": 8,
+                    "color": results_df["n_elements"],
+                    "colorscale": "Viridis",
+                    "colorbar": {"title": "Elements"},
+                    "opacity": 0.6,
+                },
+                text=[
+                    f"nx={r['array.nx']}, ny={r['array.ny']}<br>Power={r['rf.tx_power_w_per_elem']:.1f}W"
+                    for _, r in results_df.iterrows()
+                ],
+                hovertemplate="<b>Cost:</b> $%{x:,.0f}<br><b>EIRP:</b> %{y:.1f} dBW<br>%{text}<extra></extra>",
+                name="All Designs",
+            )
+        )
 
         # Pareto frontier
         pareto_sorted = pareto_df.sort_values("cost_usd")
-        fig.add_trace(go.Scatter(
-            x=pareto_sorted["cost_usd"],
-            y=pareto_sorted["eirp_dbw"],
-            mode="lines+markers",
-            marker=dict(size=12, color="red", symbol="star"),
-            line=dict(color="red", width=2, dash="dash"),
-            name="Pareto Frontier"
-        ))
+        fig.add_trace(
+            go.Scatter(
+                x=pareto_sorted["cost_usd"],
+                y=pareto_sorted["eirp_dbw"],
+                mode="lines+markers",
+                marker={"size": 12, "color": "red", "symbol": "star"},
+                line={"color": "red", "width": 2, "dash": "dash"},
+                name="Pareto Frontier",
+            )
+        )
 
         fig.update_layout(
             xaxis_title="System Cost (USD)",
             yaxis_title="EIRP (dBW)",
-            legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
+            legend={"yanchor": "top", "y": 0.99, "xanchor": "left", "x": 0.01},
             height=500,
         )
 
@@ -311,9 +325,26 @@ if st.session_state.trade_results is not None:
 
         # Pareto table
         st.subheader("Pareto-Optimal Designs")
-        pareto_display = pareto_sorted[["case_id", "array.nx", "array.ny", "n_elements",
-                                         "rf.tx_power_w_per_elem", "eirp_dbw", "cost_usd"]].copy()
-        pareto_display.columns = ["Case ID", "nx", "ny", "Elements", "TX Power (W)", "EIRP (dBW)", "Cost ($)"]
+        pareto_display = pareto_sorted[
+            [
+                "case_id",
+                "array.nx",
+                "array.ny",
+                "n_elements",
+                "rf.tx_power_w_per_elem",
+                "eirp_dbw",
+                "cost_usd",
+            ]
+        ].copy()
+        pareto_display.columns = [
+            "Case ID",
+            "nx",
+            "ny",
+            "Elements",
+            "TX Power (W)",
+            "EIRP (dBW)",
+            "Cost ($)",
+        ]
         pareto_display["EIRP (dBW)"] = pareto_display["EIRP (dBW)"].round(1)
         pareto_display["TX Power (W)"] = pareto_display["TX Power (W)"].round(2)
         pareto_display["Cost ($)"] = pareto_display["Cost ($)"].round(0).astype(int)
@@ -349,15 +380,19 @@ if st.session_state.trade_results is not None:
 
         # Column selection
         all_cols = list(results_df.columns)
-        default_cols = ["case_id", "array.nx", "array.ny", "n_elements",
-                       "rf.tx_power_w_per_elem", "g_peak_db", "eirp_dbw", "cost_usd"]
+        default_cols = [
+            "case_id",
+            "array.nx",
+            "array.ny",
+            "n_elements",
+            "rf.tx_power_w_per_elem",
+            "g_peak_db",
+            "eirp_dbw",
+            "cost_usd",
+        ]
         default_cols = [c for c in default_cols if c in all_cols]
 
-        selected_cols = st.multiselect(
-            "Select columns to display",
-            all_cols,
-            default=default_cols
-        )
+        selected_cols = st.multiselect("Select columns to display", all_cols, default=default_cols)
 
         if selected_cols:
             display_df = results_df[selected_cols].copy()
@@ -377,7 +412,7 @@ if st.session_state.trade_results is not None:
                 label="📥 Download Results (CSV)",
                 data=csv,
                 file_name="trade_study_results.csv",
-                mime="text/csv"
+                mime="text/csv",
             )
 
 else:

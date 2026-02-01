@@ -142,7 +142,8 @@ with col3:
 
 # Footer
 st.divider()
-st.markdown("""
+st.markdown(
+    """
 <div style='text-align: center; color: gray;'>
     <small>
         phased-array-systems v0.4.0 |
@@ -150,4 +151,6 @@ st.markdown("""
         MIT License
     </small>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
