@@ -159,8 +159,8 @@ If you use phased-array-systems in academic work, please cite:
 ```bibtex
 @software{phased_array_systems,
   title = {phased-array-systems: Phased Array Antenna System Design and Optimization},
-  author = {{phased-array-systems contributors}},
-  year = {2024},
+  author = {John Hodge},
+  year = {2026},
   url = {https://github.com/jman4162/phased-array-systems}
 }
 ```
