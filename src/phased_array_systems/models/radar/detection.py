@@ -71,7 +71,7 @@ def compute_pd_from_snr(
     else:
         # Non-coherent integration: approximate gain
         # Using empirical formula: effective SNR ≈ snr * n^0.8
-        snr_integrated = snr_linear * (n_pulses ** 0.8)
+        snr_integrated = snr_linear * (n_pulses**0.8)
 
     # Compute threshold from Pfa
     threshold = compute_detection_threshold(pfa, n_samples=1)
